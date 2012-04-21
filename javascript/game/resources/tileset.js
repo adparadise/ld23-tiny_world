@@ -18,12 +18,14 @@ Game.Resources.Tileset = Game.Class({
         }
     },
 
-    drawTile: function (display, cell, x, y) {
+    drawTile: function (display, camera, cell, x, y) {
         var uv = this.tileIDToUV(cell.tileID);
         display.context.drawImage(this.image, 
                                   uv.u * this.tileWidth, uv.v * this.tileHeight, 
                                   this.tileWidth, this.tileHeight,
-                                  x * this.tileWidth, y * this.tileHeight,
-                                  this.tileWidth, this.tileHeight);
+                                  (x * this.tileWidth - camera.offset.x) * display.scale, 
+                                  (y * this.tileHeight - camera.offset.y) * display.scale,
+                                  this.tileWidth * display.scale, 
+                                  this.tileHeight * display.scale);
     }
 });

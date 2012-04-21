@@ -23,13 +23,13 @@ Game.Map = Game.Class({
         }
     },
 
-    render: function (display, resources) {
+    render: function (display, camera, resources) {
         var x, y;
         var cell;
         for (y = this.height; y--;) {
             for (x = this.width; x--;) {
                 cell = this.cells[y][x];
-                resources.tileset['bgtiles'].drawTile(display, cell, x, y);
+                resources.tileset['bgtiles'].drawTile(display, camera, cell, x, y);
             }
         }
     },
