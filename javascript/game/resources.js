@@ -10,13 +10,23 @@ Game.Resources = Game.Class({
         var resource;
         this.completeCallback = completeCallback;
         this.tileset = {};
+        this.spritesheet = {};
+
         this.pendingResourceCount = 0;
         _.each(definitions, function (def, label) {
-            if (def.type === "tileset") {
+            switch (def.type) {
+            case "tileset":
                 resource = new Game.Resources.Tileset(def);
                 resource.load(resources.eventCallback('resourceComplete', resource));
                 resources.tileset[label] = resource;
                 resources.pendingResourceCount += 1;
+                break;
+            case "spritesheet":
+                resource = new Game.Resources.Spritesheet(def);
+                resource.load(resources.eventCallback('resourceComplete', resource));
+                resources.spritesheet[label] = resource;
+                resources.pendingResourceCount += 1;
+                break;
             }
         });
     },

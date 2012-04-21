@@ -3,6 +3,7 @@
 var Game = {
     Screen: {},
     Resources: {},
+    Characters: {},
 
     begin: function () {
         Game.$ = jQuery;

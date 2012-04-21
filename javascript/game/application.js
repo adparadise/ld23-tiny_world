@@ -29,13 +29,16 @@ Game.Application = Game.Class({
             application.render();
             window.requestAnimationFrame(renderCallback);
         }
+
+        this.frameNumber = 0;
         window.requestAnimationFrame(renderCallback);
         this.stepInterval = setInterval(this.eventCallback('step'), 1000 / Game.Constants.worldRate);
     },
 
     step: function () {
+        this.frameNumber += 1;
         this.input.step();
-        this.screen.step(1000 / Game.Constants.worldRate, this.input);
+        this.screen.step(1000 / Game.Constants.worldRate, this.frameNumber, this.input);
     },
 
     render: function () {

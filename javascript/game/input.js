@@ -35,18 +35,24 @@ Game.Input = Game.Class({
     isWatchedKey: function (keyCode) {
         if (keyCode >= 37 && keyCode <= 41) {
             return true;
+        } else if (keyCode === 65 || keyCode === 68 || keyCode === 87 || keyCode === 83) {
+            return true;
         }
     },
 
     exclusivePairsOf: function (keyCode) {
         switch (keyCode) {
+        case 65:
         case 37:
             return ['right'];
         case 38:
+        case 87:
             return ['down'];
         case 39:
+        case 68:
             return ['left'];
         case 40:
+        case 83:
             return ['up'];
         };
     },
@@ -54,12 +60,16 @@ Game.Input = Game.Class({
     keyCodeToSymbol: function (keyCode) {
         switch (keyCode) {
         case 37:
+        case 65:
             return 'left';
         case 38:
+        case 87:
             return 'up';
         case 39:
+        case 68:
             return 'right';
         case 40:
+        case 83:
             return 'down';
         };
     },

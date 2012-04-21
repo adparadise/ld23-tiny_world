@@ -12,10 +12,10 @@ Game.Constants = {
             height: 10,
             sets: {
                 solid:      [31,32,41,42,  21,21,21,21],
-                leftEdge:   [35,45,        25,55],
-                rightEdge:  [34,44,        24,54],
-                topEdge:    [61,62,        60,60],
-                bottomEdge: [64,65,        63,63],
+                leftEdge:   [35,45,25,55],
+                rightEdge:  [34,44,24,54],
+                topEdge:    [61,62,60,60],
+                bottomEdge: [64,65,63,63],
                 blCorner: [47],
                 brCorner: [48],
                 tlCorner: [37],
@@ -34,6 +34,18 @@ Game.Constants = {
                 's_self_w': 'trCorner'
             }
         },
+        player: {
+            type: "spritesheet",
+            url: "images/player.png",
+            tileWidth: 32,
+            tileHeight: 48,
+            width: 10,
+            height: 10,
+            sets: {
+                stand: [24],
+                walk: [25,26,27]
+            }
+        }
     },
     maps: {
         map1: [[0,0,0,0,0,0,0,0],

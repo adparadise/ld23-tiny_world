@@ -14,7 +14,10 @@ head.js(
             "javascript/game/resources.js",
             "javascript/game/usage.js",
 
+            "javascript/game/characters/player.js",
+
             "javascript/game/resources/tileset.js",
+            "javascript/game/resources/spritesheet.js",
 
             "javascript/game/screen/game.js",
             function () {
