@@ -70,43 +70,41 @@ Game.Map = Game.Class({
     resolveObstructions: function (object, targetPosition) {
         var deltaX = targetPosition.x - object.position.x;
         var deltaY = targetPosition.y - object.position.y;
-        var targetX, targetY, targetSolid;
+        var targetX, targetY;
+        var targetXL, targetXR;
+        var targetYL, targetYR;
+        var targetSolidL, targetSolidR;
         var nudge = 0.01;
-
+        var directionX = 1, directionY = 1;
+        var cellEdgeX = 0, cellEdgeY = 0;
         if (deltaX < 0) {
-            targetX = Math.floor((targetPosition.x - object.radius) / this.tileset.tileWidth);
-            targetY = Math.floor((targetPosition.y) / this.tileset.tileHeight);
-            targetSolid = this.getAttributeAt(targetX, targetY, 'solid');
-            if (!targetSolid) {
-                targetPosition.x = ((targetX + 1) * this.tileset.tileWidth) + object.radius + nudge;
-            }
+            directionX = -1;
+            cellEdgeX = 1;
         }
-        if (deltaX > 0) {
-            targetX = Math.floor((targetPosition.x + object.radius) / this.tileset.tileWidth);
-            targetY = Math.floor((targetPosition.y) / this.tileset.tileHeight);
-            targetSolid = this.getAttributeAt(targetX, targetY, 'solid');
-            if (!targetSolid) {
-                targetPosition.x = (targetX * this.tileset.tileWidth) - object.radius - nudge;
-            }
+        if (deltaY < 0) {
+            directionY = -1;
+            cellEdgeY = 1;
         }
 
-        if (deltaY < 0) {
-            targetX = Math.floor((targetPosition.x) / this.tileset.tileWidth);
-            targetY = Math.floor((targetPosition.y - object.radius) / this.tileset.tileHeight);
-            targetSolid = this.getAttributeAt(targetX, targetY, 'solid');
-            if (!targetSolid) {
-                targetPosition.y = ((targetY + 1) * this.tileset.tileHeight) + object.radius + nudge;
-            }
+        targetX  = Math.floor((targetPosition.x + directionX * object.radius) / this.tileset.tileWidth);
+        targetYL = Math.floor((targetPosition.y + object.radius * .7)         / this.tileset.tileHeight);
+        targetYR = Math.floor((targetPosition.y - object.radius * .7)         / this.tileset.tileHeight);
+        targetSolidL = this.getAttributeAt(targetX, targetYL, 'solid');
+        targetSolidR = this.getAttributeAt(targetX, targetYL, 'solid');
+        if (!targetSolidL || !targetSolidR) {
+            targetPosition.x = ((targetX + cellEdgeX) * this.tileset.tileWidth) - 
+                directionX * (object.radius + nudge);
         }
-        if (deltaY > 0) {
-            targetX = Math.floor((targetPosition.x) / this.tileset.tileWidth);
-            targetY = Math.floor((targetPosition.y + object.radius) / this.tileset.tileHeight);
-            targetSolid = this.getAttributeAt(targetX, targetY, 'solid');
-            if (!targetSolid) {
-                targetPosition.y = (targetY * this.tileset.tileHeight) - object.radius - nudge;
-            }
+
+        targetXL = Math.floor((targetPosition.x + object.radius * .7)         / this.tileset.tileWidth);
+        targetXR = Math.floor((targetPosition.x - object.radius * .7)         / this.tileset.tileWidth);
+        targetY  = Math.floor((targetPosition.y + directionY * object.radius) / this.tileset.tileHeight);
+        targetSolidL = this.getAttributeAt(targetXL, targetY, 'solid');
+        targetSolidR = this.getAttributeAt(targetXR, targetY, 'solid');
+        if (!targetSolidL || !targetSolidR) {
+            targetPosition.y = ((targetY + cellEdgeY) * this.tileset.tileHeight) -
+                directionY * (object.radius + nudge);
         }
-        
     },
 
     cellNeighbors: function (x, y, attribute) {

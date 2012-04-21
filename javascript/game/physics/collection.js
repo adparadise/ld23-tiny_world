@@ -24,8 +24,10 @@ Game.Physics.Collection = Game.Class({
                 _.each(collection.statics, function (staticObject) {
                     staticObject.resolveObstructions(object, targetPosition);
                 });
-                object.velocity.x = (targetPosition.x - object.position.x) * 1000 / timeDelta;
-                object.velocity.y = (targetPosition.y - object.position.y) * 1000 / timeDelta;
+                object.velocity.x = Math.min((targetPosition.x - object.position.x) * 1000 / timeDelta,
+                                             object.SPEED_X);
+                object.velocity.y = Math.min((targetPosition.y - object.position.y) * 1000 / timeDelta,
+                                             object.SPEED_Y);
                 object.position.x = targetPosition.x;
                 object.position.y = targetPosition.y;
             }
