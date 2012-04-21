@@ -43,6 +43,6 @@ Game.Application = Game.Class({
 
     render: function () {
         this.display.clear();
-        this.screen.render(this.display, this.resources);
+        this.screen.render(this.display, this.resources, this.frameNumber);
     }
 });

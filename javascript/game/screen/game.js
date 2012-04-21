@@ -12,8 +12,8 @@ Game.Screen.Game = Game.Class({
         this.player.step(timeDelta, frameNumber, input);
     },
 
-    render: function (display, resources) {
-        this.map.render(display, this.camera, resources);
-        this.player.render(display, this.camera, resources);
+    render: function (display, resources, frameNumber) {
+        this.map.render(display, this.camera, resources, frameNumber);
+        this.player.render(display, this.camera, resources, frameNumber);
     }
 });

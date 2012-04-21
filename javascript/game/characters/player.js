@@ -10,12 +10,14 @@ Game.Characters.Player = Game.Class({
         this.position = { x: 30, y: 30 };
         this.targetVelocity = { x: 0, y: 0 };
         this.velocity = { x: 0, y: 0 };
+        this.state = false;
+        this.inStateSince = 0;
     },
     
     step: function (timeDelta, frameNumber, input) {
         this.resolveInput(timeDelta, frameNumber, input);
-        this.resolveAcceleration();
-        this.resolveVelocity(timeDelta);
+        this.resolveAcceleration(timeDelta, frameNumber);
+        this.resolveVelocity(timeDelta, frameNumber);
     },
 
     resolveInput: function (timeDelta, frameNumber, input) {
@@ -47,7 +49,7 @@ Game.Characters.Player = Game.Class({
         }
     },
 
-    resolveAcceleration: function () {
+    resolveAcceleration: function (timeDelta, frameNumber) {
         var deltaX, deltaY, deltaAbs;
         if (this.targetVelocity.x !== this.velocity.x ||
             this.targetVelocity.y !== this.velocity.y) {
@@ -65,12 +67,42 @@ Game.Characters.Player = Game.Class({
         }
     },
 
-    resolveVelocity: function (timeDelta) {
+    resolveVelocity: function (timeDelta, frameNumber) {
         this.position.x += this.velocity.x * timeDelta / 1000;
         this.position.y += this.velocity.y * timeDelta / 1000;
+        if (this.velocity.x !== 0 || this.velocity.y !== 0) {
+            if (this.state != 'moving') {
+                this.state = 'moving';
+                this.inStateSince = frameNumber;
+            }
+        } else {
+            this.state = false;
+        }
     },
 
-    render: function (display, camera, resources) {
-        resources.spritesheet['player'].drawSprite(display, camera, 24, this.position.x, this.position.y);
+    getSpriteID: function (frameNumber) {
+        var frameFrequency = 5;
+        var framesSinceStart;
+        var frameCount = 0;
+        var spriteID = 0;
+        if (this.state === 'moving') {
+            framesSinceStart = Math.floor((frameNumber - this.inStateSince) / frameFrequency);
+            if (this.velocity.x > 0) {
+                frameCount = Game.Constants.resourceDefinitions.player.sets.walkRight.length;
+                spriteID = Game.Constants.resourceDefinitions.player.sets.walkRight[framesSinceStart % frameCount];
+            } else {
+                frameCount = Game.Constants.resourceDefinitions.player.sets.walkLeft.length;
+                spriteID = Game.Constants.resourceDefinitions.player.sets.walkLeft[framesSinceStart % frameCount];
+            }
+            
+            return spriteID;
+        } else {
+            return Game.Constants.resourceDefinitions.player.sets.stand[0];
+        }
+    },
+
+    render: function (display, camera, resources, frameNumber) {
+        var spriteID = this.getSpriteID(frameNumber);
+        resources.spritesheet['player'].drawSprite(display, camera, spriteID, this.position.x, this.position.y);
     }
 });

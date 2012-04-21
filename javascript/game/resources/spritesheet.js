@@ -25,6 +25,8 @@ Game.Resources.Spritesheet = Game.Class({
 
     drawSprite: function (display, camera, spriteID, x, y) {
         var uv = this.spriteIDToUV(spriteID);
+        var direction = 1;
+        
         display.context.drawImage(this.image, 
                                   uv.u * this.tileWidth, uv.v * this.tileHeight, 
                                   this.tileWidth, this.tileHeight,
