@@ -42,9 +42,9 @@ Game.Constants = {
             width: 10,
             height: 10,
             sets: {
-                stand: [24],
-                walkLeft: [25,26,27],
-                walkRight: [35,36,37]
+                stand: [23],
+                walkLeft: [24,25,26,27,28,29],
+                walkRight: [38,37,36,35,34,33]
             }
         }
     },

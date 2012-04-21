@@ -3,9 +3,9 @@
 Game.Display = Game.Class({
     initialize: function ($canvas) {
         this.scale = 1;
-        this.hwScale = 2;
-        this.width = 500;
-        this.height = 200;
+        this.hwScale = 1;
+        this.width = 1000;
+        this.height = 400;
 
         this.$canvas = $canvas;
         this.$canvas.css("border", "1px solid black");
@@ -19,5 +19,7 @@ Game.Display = Game.Class({
 
     clear: function () {
         this.context.clearRect(0, 0, this.width, this.height);
+        this.context.fillStyle = "#000000";
+        this.context.fillRect(0, 0, this.width, this.height);
     }
 });
