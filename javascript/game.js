@@ -1,6 +1,9 @@
 "use strict";
 
 var Game = {
+    Screen: {},
+    Resources: {},
+
     begin: function () {
         Game.$ = jQuery;
         var $canvas = Game.$('canvas#main');
