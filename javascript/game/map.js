@@ -39,7 +39,7 @@ Game.Map = Game.Class({
                     setName = '_blank';
                 }
                 set = Game.Constants.resourceDefinitions[this.tilesetName].sets[setName];
-                psuedoRandom = Game.random.get(y * this.width + x);
+                psuedoRandom = Game.random.get(y * (this.width + 2) + x);
                 this.cells[y][x].tileID = set[psuedoRandom % set.length];
             }
         }        
@@ -59,22 +59,23 @@ Game.Map = Game.Class({
         }
     },
 
-    cellNeighbors: function (x, y) {
+    cellNeighbors: function (x, y, attribute) {
         var i, j;
         var neighbors = [];
-        if (this.getAttributeAt(x, y, 'solid')) {
+        attribute = attribute || 'solid'
+        if (this.getAttributeAt(x, y, attribute)) {
             neighbors.push('self');
         }
-        if (this.getAttributeAt(x + 1, y, 'solid')) {
+        if (this.getAttributeAt(x + 1, y, attribute)) {
             neighbors.push('e');
         }
-        if (this.getAttributeAt(x - 1, y, 'solid')) {
+        if (this.getAttributeAt(x - 1, y, attribute)) {
             neighbors.push('w');
         }
-        if (this.getAttributeAt(x, y + 1, 'solid')) {
+        if (this.getAttributeAt(x, y + 1, attribute)) {
             neighbors.push('s');
         }
-        if (this.getAttributeAt(x, y - 1, 'solid')) {
+        if (this.getAttributeAt(x, y - 1, attribute)) {
             neighbors.push('n');
         }
         return neighbors.sort().join("_");

@@ -3,7 +3,7 @@
 Game.Display = Game.Class({
     initialize: function ($canvas) {
         this.scale = 1;
-        this.hwScale = 1;
+        this.hwScale = 2;
         this.width = 500;
         this.height = 200;
 
