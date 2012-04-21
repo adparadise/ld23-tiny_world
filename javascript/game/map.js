@@ -30,6 +30,7 @@ Game.Map = Game.Class({
         var cellNeighbors;
         var setName;
         var set;
+        var psuedoRandom;
         for (y = this.height; y--;) {
             for (x = this.width; x--;) {
                 cellNeighbors = this.cellNeighbors(x, y);
@@ -38,7 +39,8 @@ Game.Map = Game.Class({
                     setName = '_blank';
                 }
                 set = Game.Constants.resourceDefinitions[this.tilesetName].sets[setName];
-                this.cells[y][x].tileID = set[(y * this.width + x) % set.length]
+                psuedoRandom = Game.random.get(y * this.width + x);
+                this.cells[y][x].tileID = set[psuedoRandom % set.length];
             }
         }        
     },

@@ -7,6 +7,7 @@ var Game = {
     begin: function () {
         Game.$ = jQuery;
         var $canvas = Game.$('canvas#main');
+        Game.random = new Game.Random();
         Game.instance = new Game.Application({
             $canvas: $canvas,
             usageUrl: "http://localhost:4567"

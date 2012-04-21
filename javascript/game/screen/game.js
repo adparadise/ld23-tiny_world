@@ -2,7 +2,8 @@
 
 Game.Screen.Game = Game.Class({
     initialize: function () {
-        this.map = new Game.Map(5, 5, 'bgtiles');
+        this.map = new Game.Map(Game.Constants.maps.map1[0].length, 
+                                Game.Constants.maps.map1.length, 'bgtiles');
         this.camera = new Game.Camera();
     },
 
