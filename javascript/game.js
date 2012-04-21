@@ -4,7 +4,10 @@ var Game = {
     begin: function () {
         Game.$ = jQuery;
         var $canvas = Game.$('canvas#main');
-        Game.instance = new Game.Application($canvas);
+        Game.instance = new Game.Application({
+            $canvas: $canvas,
+            usageUrl: "http://localhost:4567"
+        });
     },
 
     Class: function (prototype) {
