@@ -1,6 +1,7 @@
 "use strict";
 
 Game.Constants = {
+    worldRate: 60,
     resourceDefinitions: {
         bgtiles: {
             type: "tileset",

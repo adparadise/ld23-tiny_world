@@ -8,6 +8,7 @@ head.js(
             "javascript/game/camera.js",
             "javascript/game/constants.js",
             "javascript/game/display.js",
+            "javascript/game/input.js",
             "javascript/game/map.js",
             "javascript/game/random.js",
             "javascript/game/resources.js",

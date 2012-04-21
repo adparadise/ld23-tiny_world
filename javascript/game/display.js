@@ -15,5 +15,9 @@ Game.Display = Game.Class({
         this.$canvas[0].height = this.height;
         this.$canvas.width(this.width * this.hwScale);
         this.$canvas.height(this.height * this.hwScale);
+    },
+
+    clear: function () {
+        this.context.clearRect(0, 0, this.width, this.height);
     }
 });
