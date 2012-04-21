@@ -4,6 +4,7 @@ var Game = {
     Screen: {},
     Resources: {},
     Characters: {},
+    Physics: {},
 
     begin: function () {
         Game.$ = jQuery;

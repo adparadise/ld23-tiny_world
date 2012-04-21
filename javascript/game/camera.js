@@ -3,8 +3,8 @@
 Game.Camera = Game.Class({
     initialize: function () {
         this.offset = {
-            x: -10,
-            y: 10
+            x: 0,
+            y: 0
         };
     }
 });

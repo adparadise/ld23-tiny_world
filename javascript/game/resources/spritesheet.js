@@ -1,13 +1,18 @@
 "use strict";
 
 Game.Resources.Spritesheet = Game.Class({
-    initialize: function (def) {
+    initialize: function (name, def) {
+        this.name = name;
         this.image = new Image();
         this.imageUrl = def.url;
         this.tileWidth = def.tileWidth;
         this.tileHeight = def.tileHeight;
         this.width = def.width;
         this.height = def.height;
+        this.origin = {
+            x: def.origin.x,
+            y: def.origin.y
+        };
     },
 
     load: function (callback) {
@@ -30,8 +35,8 @@ Game.Resources.Spritesheet = Game.Class({
         display.context.drawImage(this.image, 
                                   uv.u * this.tileWidth, uv.v * this.tileHeight, 
                                   this.tileWidth, this.tileHeight,
-                                  (x - camera.offset.x) * display.scale, 
-                                  (y - camera.offset.y) * display.scale,
+                                  (x - camera.offset.x - this.origin.x) * display.scale, 
+                                  (y - camera.offset.y - this.origin.y) * display.scale,
                                   this.tileWidth * display.scale, 
                                   this.tileHeight * display.scale);
                                   

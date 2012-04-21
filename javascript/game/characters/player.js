@@ -7,20 +7,20 @@ Game.Characters.Player = Game.Class({
         this.SPEED_XY = 105;
         this.ACCEL = 40;
 
-        this.position = { x: 30, y: 30 };
+        this.position = { x: 50, y: 50 };
         this.targetVelocity = { x: 0, y: 0 };
         this.velocity = { x: 0, y: 0 };
+        this.radius = 8;
         this.state = false;
         this.inStateSince = 0;
     },
     
     step: function (timeDelta, frameNumber, input) {
-        this.resolveInput(timeDelta, frameNumber, input);
+        this.resolveInput(input);
         this.resolveAcceleration(timeDelta, frameNumber);
-        this.resolveVelocity(timeDelta, frameNumber);
     },
 
-    resolveInput: function (timeDelta, frameNumber, input) {
+    resolveInput: function (input) {
         var xAxis = 0;
         var yAxis = 0;
 
@@ -49,7 +49,7 @@ Game.Characters.Player = Game.Class({
         }
     },
 
-    resolveAcceleration: function (timeDelta, frameNumber) {
+    resolveAcceleration: function (timeDelta) {
         var deltaX, deltaY, deltaAbs;
         if (this.targetVelocity.x !== this.velocity.x ||
             this.targetVelocity.y !== this.velocity.y) {
@@ -67,9 +67,7 @@ Game.Characters.Player = Game.Class({
         }
     },
 
-    resolveVelocity: function (timeDelta, frameNumber) {
-        this.position.x += this.velocity.x * timeDelta / 1000;
-        this.position.y += this.velocity.y * timeDelta / 1000;
+    resolveState: function (frameNumber) {
         if (this.velocity.x !== 0 || this.velocity.y !== 0) {
             if (this.state != 'moving') {
                 this.state = 'moving';

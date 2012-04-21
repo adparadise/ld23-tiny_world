@@ -1,15 +1,25 @@
 
 
-Game.Screen.Game = Game.Class({
+Game.Screen.Gameplay = Game.Class({
     initialize: function () {
+        this.physicsCollection = new Game.Physics.Collection();
         this.map = new Game.Map(Game.Constants.maps.map1[0].length, 
                                 Game.Constants.maps.map1.length, 'bgtiles');
         this.player = new Game.Characters.Player();
+        this.physicsCollection.addStatic(this.map);
+        this.physicsCollection.addObject(this.player);
         this.camera = new Game.Camera();
+    },
+
+    resolveResources: function (resources) {
+        this.map.resolveResources(resources);
     },
 
     step: function (timeDelta, frameNumber, input) {
         this.player.step(timeDelta, frameNumber, input);
+        this.physicsCollection.resolveVelocities(timeDelta);
+
+        this.player.resolveState(frameNumber);
     },
 
     render: function (display, resources, frameNumber) {

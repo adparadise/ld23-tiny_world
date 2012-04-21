@@ -41,6 +41,10 @@ Game.Constants = {
             tileHeight: 48,
             width: 10,
             height: 10,
+            origin: {
+                x: 16,
+                y: 40
+            },
             sets: {
                 stand: [23],
                 walkLeft: [24,25,26,27,28,29],

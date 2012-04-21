@@ -19,7 +19,9 @@ head.js(
             "javascript/game/resources/tileset.js",
             "javascript/game/resources/spritesheet.js",
 
-            "javascript/game/screen/game.js",
+            "javascript/game/physics/collection.js",
+            
+            "javascript/game/screen/gameplay.js",
             function () {
                 Game.begin();
             }

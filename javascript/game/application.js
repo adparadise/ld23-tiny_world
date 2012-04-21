@@ -9,17 +9,17 @@ Game.Application = Game.Class({
         this.input = new Game.Input();
 
         // Start resource loading
-        this.resources.loadResources(Game.Constants.resourceDefinitions, 
-                                     this.eventCallback('ready'));
+        this.resources.loadResources(Game.Constants.resourceDefinitions, this.eventCallback('ready'));
 
         // Prepare a screen
-        this.screen = new Game.Screen.Game();
+        this.screen = new Game.Screen.Gameplay();
 
         // Report that we've begun.
         this.usage.report({event:"start"});
     },
 
     ready: function () {
+        this.screen.resolveResources(this.resources);
         this.start();
     },
 

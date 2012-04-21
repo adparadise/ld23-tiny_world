@@ -16,13 +16,13 @@ Game.Resources = Game.Class({
         _.each(definitions, function (def, label) {
             switch (def.type) {
             case "tileset":
-                resource = new Game.Resources.Tileset(def);
+                resource = new Game.Resources.Tileset(label, def);
                 resource.load(resources.eventCallback('resourceComplete', resource));
                 resources.tileset[label] = resource;
                 resources.pendingResourceCount += 1;
                 break;
             case "spritesheet":
-                resource = new Game.Resources.Spritesheet(def);
+                resource = new Game.Resources.Spritesheet(label, def);
                 resource.load(resources.eventCallback('resourceComplete', resource));
                 resources.spritesheet[label] = resource;
                 resources.pendingResourceCount += 1;

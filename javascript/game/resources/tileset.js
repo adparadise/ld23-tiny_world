@@ -1,7 +1,8 @@
 "use strict";
 
 Game.Resources.Tileset = Game.Class({
-    initialize: function (def) {
+    initialize: function (name, def) {
+        this.name = name;
         this.image = new Image();
         this.imageUrl = def.url;
         this.tileWidth = def.tileWidth;
