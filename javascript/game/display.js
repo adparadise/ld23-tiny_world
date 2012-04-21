@@ -2,8 +2,8 @@
 
 Game.Display = Game.Class({
     initialize: function ($canvas) {
-        this.scale = 2;
-        this.hwScale = 2;
+        this.scale = 1;
+        this.hwScale = 1;
         this.width = 500;
         this.height = 200;
 

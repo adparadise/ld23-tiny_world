@@ -14,12 +14,35 @@ var Game = {
     },
 
     Class: function (prototype) {
-        var constructor = function () {
+        var liveConstructor;
+        var baseObject = this.getBaseObject(this.BaseClassPrototype);
+        _.extend(baseObject, prototype);
+        
+        liveConstructor = function () {
             if (this.initialize) {
                 this.initialize.apply(this, arguments);
             }
         };
-        constructor.prototype = prototype;
-        return constructor;
+        liveConstructor.prototype = baseObject;
+        
+
+        return liveConstructor;
+    },
+
+    getBaseObject: function (prototype) {
+        var baseObject;
+        var inertConstructor = function () { };
+        inertConstructor.prototype = prototype;
+
+        baseObject = new inertConstructor();
+        return baseObject;
+    },
+    
+    BaseClassPrototype: {
+        eventCallback: function (methodName) {
+            var curriedArgs = [].slice.apply(arguments).slice(1);
+            var bindArgs = [this[methodName], this].concat(curriedArgs);
+            return _.bind.apply(_, bindArgs);
+        }
     }
 };

@@ -3,11 +3,16 @@
 Game.Resources.Tileset = Game.Class({
     initialize: function (def) {
         this.image = new Image();
-        this.image.src = def.url;
+        this.imageUrl = def.url;
         this.tileWidth = def.tileWidth;
         this.tileHeight = def.tileHeight;
         this.width = def.width;
         this.height = def.height;
+    },
+
+    load: function (callback) {
+        Game.$(this.image).bind('load', callback);
+        this.image.src = this.imageUrl;
     },
 
     tileIDToUV: function (tileID) {

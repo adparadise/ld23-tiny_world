@@ -3,15 +3,17 @@
 Game.Application = Game.Class({
     initialize: function (options) {
         this.display = new Game.Display(options.$canvas);
-        this.resources = new Game.Resources(Game.Constants.resourceDefinitions);
+        this.resources = new Game.Resources();
 
         this.screen = new Game.Screen.Game();
-        setTimeout(function () {
-            var app = Game.instance;
-            app.screen.render(app.display, app.resources);
-        }, 300);
-
         this.usage = new Game.Usage(options.usageUrl);
         this.usage.report({event:"start"});
+
+        this.resources.loadResources(Game.Constants.resourceDefinitions, 
+                                     this.eventCallback('ready'));
+    },
+
+    ready: function () {
+        this.screen.render(this.display, this.resources);
     }
 });
