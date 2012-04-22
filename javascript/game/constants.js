@@ -60,7 +60,7 @@ Game.Constants = {
             height: 2,
             origin: {
                 x: 141,
-                y: 220
+                y: 266
             },
             sets: {
                 roll: [0,1,2,3]
