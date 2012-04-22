@@ -59,7 +59,7 @@ Game.Map.Generator = Game.Class({
         var minR, maxR;
         var minS, maxS;
         var r, s;
-        var panelMassIndex
+        var panelMassIndex;
         var panelMassList;
         var fragmentReference = this.getFragmentReferenceFromMassInstance(massInstance);
 
