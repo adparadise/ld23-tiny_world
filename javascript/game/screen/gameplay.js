@@ -3,7 +3,7 @@
 Game.Screen.Gameplay = Game.Class({
     initialize: function () {
         this.physicsCollection = new Game.Physics.Collection();
-        this.map = new Game.Map(16, 16, 'bgtiles');
+        this.map = new Game.Map(32, 32, 'bgtiles');
         this.player = new Game.Characters.Player();
         this.physicsCollection.addStatic(this.map);
         this.physicsCollection.addObject(this.player);

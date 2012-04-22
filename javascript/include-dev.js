@@ -21,6 +21,7 @@ head.js(
             "javascript/game/screen/gameplay.js",
             "javascript/game/display/backbuffer.js",
             "javascript/game/map/generator.js",
+            "javascript/game/map/panel.js",
             "javascript/game/map/fragments.js",
             "javascript/game/map/continuities.js",
 

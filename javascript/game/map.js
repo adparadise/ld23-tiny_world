@@ -4,41 +4,69 @@ Game.Map = Game.Class({
     initialize: function (width, height, tilesetName) {
         this.width = width;
         this.height = height;
+        this.panelWidth = 16;
+        this.panelHeight = 16;
+        this.panelsWide = Math.ceil(this.width / this.panelWidth);
+        this.panelsHigh = Math.ceil(this.height / this.panelHeight)
         this.tilesetName = tilesetName;
 
-        this.mapGenerator = new Game.Map.Generator(width, height);
-        this.buildCells();
-        this.bakeCells();
+        this.buildPanels();
+        this.bakePanels();
+    },
+
+    buildPanels: function () {
+        var i, j;
+        var row;
+        var offset;
+        this.panels = [];
+        for (j = 0; j < this.panelsHigh; j++) {
+            row = [];
+            for (i = 0; i < this.panelsWide; i++) {
+                offset = { 
+                    x: this.panelWidth * i,
+                    y: this.panelHeight * j
+                };
+                row.push(new Game.Map.Panel(this.panelWidth, this.panelHeight, offset, this.tilesetName));
+            }
+            this.panels.push(row);
+        }
     },
 
     resolveResources: function (resources) {
         this.tileset = resources.tileset[this.tilesetName];
-        this.buildBackbuffer();
-    },
-
-    buildCells: function () {
-        var x, y;
-        var row;
-        this.cells = [];
-        for (y = 0; y < this.height; y++) {
-            row = [];
-            for (x = 0; x < this.width; x++) {
-                row.push({
-                    solid: 1
-                });
+        var i, j;
+        var panel;
+        for (j = this.panelsHigh; j--;) {
+            for (i = this.panelsWide; i--;) {
+                panel = this.panels[j][i];
+                panel.resolveResources(resources);
+                panel.buildBackbuffer();
             }
-            this.cells.push(row);
         }
     },
 
-    bakeCells: function () {
+    bakePanels: function () {
+        var i, j;
+        var panel;
+        for (j = this.panelsHigh; j--;) {
+            for (i = this.panelsWide; i--;) {
+                panel = this.panels[j][i];
+                this.bakePanel(panel);
+            }
+        }
+    },
+
+    bakePanel: function (panel) {
+        var i, j
         var x, y;
         var cellNeighbors;
-        var setName;
-        var set;
+        var setName, set;
         var psuedoRandom;
-        for (y = this.height; y--;) {
-            for (x = this.width; x--;) {
+        var cell;
+        for (j = this.panelHeight; j--;) {
+            y = panel.offset.y + j;
+            for (i = this.panelWidth; i--;) {
+                x = panel.offset.x + i;
                 cellNeighbors = this.cellNeighbors(x, y);
                 setName = Game.Constants.resourceDefinitions[this.tilesetName].rules[cellNeighbors];
                 if (!setName) {
@@ -46,9 +74,23 @@ Game.Map = Game.Class({
                 }
                 set = Game.Constants.resourceDefinitions[this.tilesetName].sets[setName];
                 psuedoRandom = Game.random.get(y * (this.width + 2) + x);
-                this.cells[y][x].tileID = set[psuedoRandom % set.length];
+                cell = this.getAt(x, y);
+                cell.tileID = set[psuedoRandom % set.length];
             }
-        }        
+        }
+    },
+
+    getAt: function (x, y) {
+        var panelX, panelY;
+        var panel;
+        panelX = Math.floor(x / this.panelWidth);
+        panelY = Math.floor(y / this.panelHeight);
+        if (this.panels[panelY]) {
+            panel = this.panels[panelY][panelX];
+        }
+        if (panel) {
+            return panel.getAt(x, y);
+        }
     },
 
     getAttributeAt: function (x, y, attribute, def) {
@@ -59,14 +101,26 @@ Game.Map = Game.Class({
         return cell[attribute];
     },
 
-    getAt: function (x, y) {
-        if (this.cells[y]) {
-            return this.cells[y][x];
+    cellNeighbors: function (x, y, attribute) {
+        var i, j;
+        var neighbors = [];
+        attribute = attribute || 'solid'
+        if (this.getAttributeAt(x, y, attribute)) {
+            neighbors.push('self');
         }
-    },
-
-    cellAtPosition: function (position) {
-        
+        if (this.getAttributeAt(x + 1, y, attribute)) {
+            neighbors.push('e');
+        }
+        if (this.getAttributeAt(x - 1, y, attribute)) {
+            neighbors.push('w');
+        }
+        if (this.getAttributeAt(x, y + 1, attribute)) {
+            neighbors.push('s');
+        }
+        if (this.getAttributeAt(x, y - 1, attribute)) {
+            neighbors.push('n');
+        }
+        return neighbors.sort().join("_");
     },
 
     resolveObstructions: function (object, targetPosition) {
@@ -109,46 +163,14 @@ Game.Map = Game.Class({
         }
     },
 
-    cellNeighbors: function (x, y, attribute) {
+    render: function (display, camera, resources) {
         var i, j;
-        var neighbors = [];
-        attribute = attribute || 'solid'
-        if (this.getAttributeAt(x, y, attribute)) {
-            neighbors.push('self');
-        }
-        if (this.getAttributeAt(x + 1, y, attribute)) {
-            neighbors.push('e');
-        }
-        if (this.getAttributeAt(x - 1, y, attribute)) {
-            neighbors.push('w');
-        }
-        if (this.getAttributeAt(x, y + 1, attribute)) {
-            neighbors.push('s');
-        }
-        if (this.getAttributeAt(x, y - 1, attribute)) {
-            neighbors.push('n');
-        }
-        return neighbors.sort().join("_");
-    },
-
-    buildBackbuffer: function () {
-        this.backbuffer = new Game.Display.Backbuffer(this.width * this.tileset.tileWidth,
-                                                     this.height * this.tileset.tileHeight);
-        this.renderToBackbuffer();
-    },
-
-    renderToBackbuffer: function () {
-        var x, y;
-        var cell;
-        for (y = this.height; y--;) {
-            for (x = this.width; x--;) {
-                cell = this.cells[y][x];
-                this.tileset.drawTile(this.backbuffer, {offset: { x: 0, y: 0 }}, cell, x, y);
+        var panel;
+        for (j = this.panelsHigh; j--;) {
+            for (i = this.panelsWide; i--;) {
+                panel = this.panels[j][i];
+                panel.render(display, camera);
             }
         }
-    },
-
-    render: function (display, camera, resources) {
-        this.backbuffer.render(display, camera);
     }
 });

@@ -14,11 +14,12 @@ Game.Display.Backbuffer = Game.Class({
         this.scale = 1;
     },
     
-    render: function (display, camera, resources) {
+    render: function (display, camera, offset) {
+        offset = offset || { x: 0, y: 0 };
         display.context.drawImage(this.$buffer[0], 
                                   0, 0, this.width, this.height,
-                                  (camera.offset.x) * display.scale,
-                                  (camera.offset.y) * display.scale,
+                                  (offset.x + camera.offset.x) * display.scale,
+                                  (offset.y + camera.offset.y) * display.scale,
                                   this.width * display.scale,
                                   this.height * display.scale);
         
