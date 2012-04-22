@@ -6,13 +6,26 @@ Game.Display.Backbuffer = Game.Class({
         this.width = width;
         this.height = height;
 
-        this.$buffer = Game.$('<canvas></canvas>');
-        this.$buffer[0].width = this.width;
-        this.$buffer[0].height = this.height;
-
-        this.context = this.$buffer[0].getContext('2d');
-
+        // used by tileset.
         this.scale = 1;
+    },
+
+    claim: function () {
+        if (!this.$buffer) {
+            this.$buffer = Game.$('<canvas></canvas>');
+            this.$buffer[0].width = this.width;
+            this.$buffer[0].height = this.height;
+            this.context = this.$buffer[0].getContext('2d');
+        }
+    },
+
+    isClaimed: function () {
+        return !!this.$buffer;
+    },
+
+    release: function () {
+        delete this.context;
+        delete this.$buffer;
     },
     
     render: function (display, camera, offset) {

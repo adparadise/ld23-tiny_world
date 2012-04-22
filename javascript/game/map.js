@@ -9,6 +9,10 @@ Game.Map = Game.Class({
 
         this.generator = new Game.Map.Generator(this.panelWidth, this.panelHeight);
         this.panels = {};
+        this.cameraPanel = {
+            r: 0,
+            s: 0
+        }
     },
 
     panelIndex: function (r, s) {
@@ -21,7 +25,7 @@ Game.Map = Game.Class({
             x: this.panelWidth * r,
             y: this.panelHeight * s
         };
-        var panel = new Game.Map.Panel(this.panelWidth, this.panelHeight, offset, this.tilesetName);
+        var panel = new Game.Map.Panel(this.panelWidth, this.panelHeight, offset, panelIndex, this.tilesetName);
         this.panels[panelIndex] = panel;
     },
 
@@ -29,9 +33,9 @@ Game.Map = Game.Class({
         this.tileset = resources.tileset[this.tilesetName];
     },
 
-    getPanel: function (r, s) {
+    getPanel: function (r, s, optional) {
         var panelIndex = this.panelIndex(r, s);
-        if (!this.panels[panelIndex]) {
+        if (!this.panels[panelIndex] && !optional) {
             this.buildPanel(r, s);
         }
         return this.panels[panelIndex];
@@ -168,7 +172,50 @@ Game.Map = Game.Class({
         }
     },
 
-    panelIDFromCoords: function (x, y) {
+    recentlyRendered: function (panel) {
+        if (!this._recentlyRendered) {
+            this._recentlyRendered = {};
+        }
+        if (!this._nextRecentIndex) {
+            this._nextRecentIndex = 1;
+        }
+        this._recentlyRendered[panel.panelIndex] = this._nextRecentIndex;
+    },
+
+    releaseOldPanels: function () {
+        var map = this;
+        var toRelease = [];
+        var i, panelIndex, panel
+        if (!this._releaseAttempts) {
+            this._releaseAttempts = 50;
+
+            // increment our own clock of age
+            if (!this._nextRecentIndex) {
+                this._nextRecentIndex = 1;
+            }
+            this._nextRecentIndex += 1;
+
+            // Look for panels to release
+            _.each(this._recentlyRendered, function (recentIndex, panelIndex) {
+                if (recentIndex < map._nextRecentIndex - 10) {
+                    toRelease.push(panelIndex);
+                }
+            });
+            
+            // release them
+            for (i = toRelease.length; i--;) {
+                panelIndex = toRelease[i];
+                delete this._recentlyRendered[panelIndex];
+                panel = this.panels[panelIndex];
+                if (panel) {
+                    console.log("releasing: " + panelIndex);
+                    panel.releaseBackbuffer()
+                }
+            }
+
+        } else {
+            this._releaseAttempts -= 1;
+        }
     },
 
     render: function (display, camera, resources) {
@@ -183,11 +230,16 @@ Game.Map = Game.Class({
         minS = Math.floor((camera.offset.y - display.height / 2) / panelHeight);
         maxS = Math.ceil( (camera.offset.y + display.height / 2) / panelHeight);
 
+        this.cameraPanel.r = Math.floor(camera.offset.x / panelWidth);
+        this.cameraPanel.s = Math.floor(camera.offset.y / panelHeight);
+
         for (s = minS; s < maxS; s++) {
             for (r = minR; r < maxR; r++) {
                 var panel = this.getPanelForRendering(r, s);
                 panel.render(display, camera, resources);
+                this.recentlyRendered(panel);
             }
         }
+        this.releaseOldPanels();
     }
 });

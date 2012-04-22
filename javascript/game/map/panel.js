@@ -2,7 +2,8 @@
 "use strict";
 
 Game.Map.Panel = Game.Class({
-    initialize: function (width, height, offset, tilesetName) {
+    initialize: function (width, height, offset, panelIndex, tilesetName) {
+        this.panelIndex = panelIndex;
         this.width = width;
         this.height = height;
         this.tilesetName = tilesetName;
@@ -47,7 +48,20 @@ Game.Map.Panel = Game.Class({
     buildBackbuffer: function () {
         this.backbuffer = new Game.Display.Backbuffer(this.width * this.tileset.tileWidth,
                                                       this.height * this.tileset.tileHeight);
-        this.renderToBackbuffer();
+        this.claimBackbuffer();
+    },
+
+    claimBackbuffer: function () {
+        if (!this.backbuffer.isClaimed()) {
+            this.backbuffer.claim();
+            this.renderToBackbuffer();
+        }
+    },
+
+    releaseBackbuffer: function () {
+        if (this.backbuffer.isClaimed()) {
+            this.backbuffer.release();
+        }
     },
 
     renderToBackbuffer: function () {
@@ -62,6 +76,7 @@ Game.Map.Panel = Game.Class({
     },
 
     render: function (display, camera, resources) {
+        this.claimBackbuffer();
         this.backbuffer.render(display, camera, {
             x: this.offset.x * this.tileset.tileWidth,
             y: this.offset.y * this.tileset.tileHeight
