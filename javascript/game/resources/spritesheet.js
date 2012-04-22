@@ -39,8 +39,8 @@ Game.Resources.Spritesheet = Game.Class({
         display.context.drawImage(this.image, 
                                   uv.u * this.tileWidth, uv.v * this.tileHeight, 
                                   this.tileWidth * span, this.tileHeight,
-                                  (x - camera.offset.x - this.origin.x - spanOffset) * display.scale, 
-                                  (y - camera.offset.y - this.origin.y) * display.scale,
+                                  (x - camera.offset.x - this.origin.x - spanOffset + display.width / 2) * display.scale, 
+                                  (y - camera.offset.y - this.origin.y + display.height / 2) * display.scale,
                                   this.tileWidth * span * display.scale, 
                                   this.tileHeight * display.scale);
                                   

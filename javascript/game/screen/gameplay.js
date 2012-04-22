@@ -14,6 +14,7 @@ Game.Screen.Gameplay = Game.Class({
         enemy = new Game.Characters.Enemy({x: 500, y: 300});
         this.enemies.push(enemy);
         this.physicsCollection.addObject(enemy);
+
         enemy = new Game.Characters.Enemy({x: 400, y: 200});
         this.enemies.push(enemy);
         this.physicsCollection.addObject(enemy);
@@ -37,6 +38,9 @@ Game.Screen.Gameplay = Game.Class({
         for (i = this.enemies.length; i--;) {
             this.enemies[i].resolveState(frameNumber);
         }
+
+        this.camera.offset.x = this.player.position.x;
+        this.camera.offset.y = this.player.position.y;
     },
 
     checkForDeath: function () {

@@ -18,8 +18,8 @@ Game.Display.Backbuffer = Game.Class({
         offset = offset || { x: 0, y: 0 };
         display.context.drawImage(this.$buffer[0], 
                                   0, 0, this.width, this.height,
-                                  (offset.x + camera.offset.x) * display.scale,
-                                  (offset.y + camera.offset.y) * display.scale,
+                                  (offset.x - camera.offset.x + display.width / 2) * display.scale,
+                                  (offset.y - camera.offset.y + display.height / 2) * display.scale,
                                   this.width * display.scale,
                                   this.height * display.scale);
         
