@@ -19,7 +19,7 @@ Game.Map.Panel = Game.Class({
             row = [];
             for (x = 0; x < this.width; x++) {
                 row.push({
-                    solid: (y * (this.width + 1) + x) % 5
+                    solid: 0
                 });
             }
             this.cells.push(row);

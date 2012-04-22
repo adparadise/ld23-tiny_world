@@ -26,6 +26,8 @@ Game.Map = Game.Class({
             y: this.panelHeight * s
         };
         var panel = new Game.Map.Panel(this.panelWidth, this.panelHeight, offset, panelIndex, this.tilesetName);
+        this.generator.paintToPanel(r, s, panel);
+        
         this.panels[panelIndex] = panel;
     },
 
@@ -48,24 +50,6 @@ Game.Map = Game.Class({
             panel.resolveResources(Game.instance.resources);
         }
         return panel;
-    },
-
-    buildPanels: function () {
-        var i, j;
-        var row;
-        var offset;
-        this.panels = [];
-        for (j = 0; j < this.panelsHigh; j++) {
-            row = [];
-            for (i = 0; i < this.panelsWide; i++) {
-                offset = { 
-                    x: this.panelWidth * i,
-                    y: this.panelHeight * j
-                };
-                row.push(new Game.Map.Panel(this.panelWidth, this.panelHeight, offset, this.tilesetName));
-            }
-            this.panels.push(row);
-        }
     },
 
     bakePanel: function (panel) {

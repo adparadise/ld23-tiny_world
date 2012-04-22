@@ -118,6 +118,10 @@ Game.Map.Continuities = Game.Class({
         });
     },
 
+    getMassByIndex: function (index) {
+        return this.masses[index];
+    },
+
     render: function (display, offset, size) {
         var i;
         var bounds;

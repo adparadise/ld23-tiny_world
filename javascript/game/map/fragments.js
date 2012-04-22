@@ -20,6 +20,17 @@ Game.Map.Fragments = Game.Class({
         this.clean();
     },
 
+    isMassPointSolid: function (index, massX, massY) {
+        var x, y;
+        var mass = this.continuities.getMassByIndex(index);
+        if (!mass) {
+            return 0;
+        }
+        x = mass.minX + massX;
+        y = mass.minY + massY;
+        return this.cellValue(x, y) === mass.value;
+    },
+
     clean: function () {
         this.fixed = undefined;
     },

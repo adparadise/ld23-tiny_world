@@ -43,6 +43,7 @@ Game.Map.Generator = Game.Class({
                 y: 0
             }
         };
+        this.massInstances.push(instance);
         return instance;
     },
 
@@ -50,14 +51,38 @@ Game.Map.Generator = Game.Class({
         return "" + r + "_" + s;
     },
 
+    getFragmentReferenceFromMassInstance: function (massInstance) {
+        return this.fragmentPool[massInstance.reference];
+    },
+
+    addMassInstance: function (massInstance, x, y) {
+        var minR, maxR;
+        var minS, maxS;
+        var r, s;
+        var panelMassIndex
+        var panelMassList;
+        var fragmentReference = this.getFragmentReferenceFromMassInstance(massInstance);
+
+        massInstance.offset.x = x;
+        massInstance.offset.y = y;
+        minR = Math.floor(x / this.panelWidth);
+        minS = Math.floor(y / this.panelHeight);
+        maxR = Math.floor((x + fragmentReference.width) / this.panelWidth);
+        maxS = Math.floor((y + fragmentReference.height) / this.panelHeight);
+
+        for (s = minS; s <= maxS; s++) {
+            for (r = minR; r <= maxR; r++) {
+                panelMassList = this.getPanelMasses(r, s);
+                panelMassList.massInstances.push(massInstance);
+            }
+        }
+    },
+
     populatePanel: function (r, s) {
         var panelMassIndex = this.panelMassIndex(r, s);
         var panelMassList = this.panelMasses[panelMassIndex];
         var massInstance = this.getNewMassInstance();
-        massInstance.offset.x = r * this.panelWidth;
-        massInstance.offset.y = s * this.panelHeight;
-
-        panelMassList.massInstances.push(massInstance);
+        this.addMassInstance(massInstance, r * this.panelWidth, s * this.panelHeight);
     },
 
     getPanelMasses: function (r, s) {
@@ -78,19 +103,34 @@ Game.Map.Generator = Game.Class({
         this.fragments.render(display);
     },
 
-    getSolids: function (r, s) {
+    isMassPointSolid: function (massInstance, x, y) {
+        var fragmentReference = this.fragmentPool[massInstance.reference];
+        var massX = (x - massInstance.offset.x);
+        var massY = (y - massInstance.offset.y);
+        return fragmentReference.fragments.isMassPointSolid(fragmentReference.index, massX, massY);
+    },
+
+    paintToPanel: function (r, s, panel) {
+        var i, j, k;
+        var x, y;
+        var value;
         var panelMasses = this.getPanelMasses(r, s);
-        var solids = [];
-        var row;
-        var i, j;
+        
         for (j = this.panelHeight; j--;) {
-            row = [];
+            y = s * this.panelHeight + j;
             for (i = this.panelWidth; i--;) {
-                row.push((j * (this.panelWidth + 1) + i) % 2);
+                x = r * this.panelWidth + i;
+                value = 0;
+                for (k = panelMasses.massInstances.length; k--;) {
+                    if (this.isMassPointSolid(panelMasses.massInstances[k], x, y)) {
+                        value = 1;
+                        break;
+                    }
+                }
+                
+                panel.cells[j][i].solid = value;
             }
-            solids.push(row);
         }
-        return solids;
     }
     
 });
