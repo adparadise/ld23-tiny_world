@@ -26,6 +26,7 @@ Game.Resources.Tileset = Game.Class({
 
     drawTile: function (display, camera, cell, x, y) {
         var uv = this.tileIDToUV(cell.tileID);
+
         display.context.drawImage(this.image, 
                                   uv.u * this.tileWidth, uv.v * this.tileHeight, 
                                   this.tileWidth, this.tileHeight,

@@ -7,15 +7,16 @@ Game.Map = Game.Class({
         this.tilesetName = tilesetName;
 
         this.mapGenerator = new Game.MapGenerator(width, height);
-        this.buildCells(Game.Constants.maps.map1);
+        this.buildCells();
         this.bakeCells();
     },
 
     resolveResources: function (resources) {
         this.tileset = resources.tileset[this.tilesetName];
+        this.buildBackbuffer();
     },
 
-    buildCells: function (map) {
+    buildCells: function () {
         var x, y;
         var row;
         this.cells = [];
@@ -23,7 +24,7 @@ Game.Map = Game.Class({
             row = [];
             for (x = 0; x < this.width; x++) {
                 row.push({
-                    solid: map[y][x]
+                    solid: 1
                 });
             }
             this.cells.push(row);
@@ -130,15 +131,24 @@ Game.Map = Game.Class({
         return neighbors.sort().join("_");
     },
 
-    render: function (display, camera, resources) {
+    buildBackbuffer: function () {
+        this.backbuffer = new Game.Display.Backbuffer(this.width * this.tileset.tileWidth,
+                                                     this.height * this.tileset.tileHeight);
+        this.renderToBackbuffer();
+    },
+
+    renderToBackbuffer: function () {
         var x, y;
         var cell;
         for (y = this.height; y--;) {
             for (x = this.width; x--;) {
                 cell = this.cells[y][x];
-                this.tileset.drawTile(display, camera, cell, x, y);
+                this.tileset.drawTile(this.backbuffer, {offset: { x: 0, y: 0 }}, cell, x, y);
             }
         }
-        this.mapGenerator.render(display);
+    },
+
+    render: function (display, camera, resources) {
+        this.backbuffer.render(display, camera);
     }
 });
