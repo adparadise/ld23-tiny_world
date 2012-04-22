@@ -5,8 +5,9 @@ Game.Screen.Gameplay = Game.Class({
     initialize: function () {
         var enemy;
         this.physicsCollection = new Game.Physics.Collection();
-        this.map = new Game.Map(32, 32, 'bgtiles');
+        this.map = new Game.Map('bgtiles');
         this.player = new Game.Characters.Player();
+       
         this.physicsCollection.addStatic(this.map);
         this.physicsCollection.addObject(this.player);
         this.camera = new Game.Camera();
@@ -23,7 +24,42 @@ Game.Screen.Gameplay = Game.Class({
 
     resolveResources: function (resources) {
         this.map.resolveResources(resources);
+        this.positionCharacters();
     },
+
+    positionCharacters: function () {
+        var r;
+        var clearingCoords;
+        var clearingR;
+        for (r = 0; r < 3; r++) {
+            clearingCoords = this.map.findClearingCoords(r, 0);
+            if (clearingCoords) {
+                clearingR = r;
+                this.player.position.x = clearingCoords.x;
+                this.player.position.y = clearingCoords.y;
+                this.camera.offset.x = clearingCoords.x;
+                this.camera.offset.y = clearingCoords.y;
+                break;
+            }
+        }
+        
+        for (r = -1; r > -3; r--) {
+            clearingCoords = this.map.findClearingCoords(clearingR + r, 0);
+            if (clearingCoords) {
+                this.enemies[0].position.x = clearingCoords.x;
+                this.enemies[0].position.y = clearingCoords.y;
+            }
+        }
+
+        for (r = 1; r < 3; r++) {
+            clearingCoords = this.map.findClearingCoords(clearingR + r, 0);
+            if (clearingCoords) {
+                this.enemies[1].position.x = clearingCoords.x;
+                this.enemies[1].position.y = clearingCoords.y;
+            }
+        }
+    },
+
 
     step: function (timeDelta, frameNumber, input) {
         var i;

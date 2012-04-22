@@ -26,6 +26,29 @@ Game.Map.Panel = Game.Class({
         }
     },
 
+    findClearingCoords: function () {
+        var i, j;
+        var x, y;
+        var coords;
+        for (j = this.height; j--;) {
+            y = (j + this.height / 2) % this.height;
+            for (i = this.width; i--;) {
+                x = (i + this.width / 2) % this.width;
+                if (this.cells[y][x].neighborClass === "e_n_s_self_w") {
+                    coords = {
+                        x: x + this.offset.x,
+                        y: y + this.offset.y
+                    };
+                    break;
+                }
+            }
+            if (coords) {
+                break;
+            }
+        }
+        return coords;
+    },
+
     resolveResources: function (resources) {
         this.tileset = resources.tileset[this.tilesetName];
         this.buildBackbuffer();

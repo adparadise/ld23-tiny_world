@@ -2,7 +2,7 @@
 "use strict";
 
 Game.Map = Game.Class({
-    initialize: function (width, height, tilesetName) {
+    initialize: function (tilesetName) {
         this.panelWidth = 16;
         this.panelHeight = 16;
         this.tilesetName = tilesetName;
@@ -13,6 +13,15 @@ Game.Map = Game.Class({
             r: 0,
             s: 0
         };
+    },
+
+    findClearingCoords: function (r, s) {
+        var panel = this.getPanelForRendering(r, s);
+        var coords = panel.findClearingCoords();
+        return {
+            x: (coords.x + .5) * this.tileset.tileWidth,
+            y: (coords.y + .5) * this.tileset.tileHeight,
+        }
     },
 
     panelIndex: function (r, s) {
@@ -71,6 +80,7 @@ Game.Map = Game.Class({
                 set = Game.Constants.resourceDefinitions[this.tilesetName].sets[setName];
                 psuedoRandom = Game.random.get(y * (this.panelWidth + 2) + x);
                 cell = this.getAt(x, y);
+                cell.neighborClass = cellNeighbors;
                 cell.tileID = set[psuedoRandom % set.length];
             }
         }
