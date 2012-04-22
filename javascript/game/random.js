@@ -8,7 +8,12 @@ Game.Random = Game.Class({
     },
 
     get: function (index) {
-        return this.stock[index % this.stockLength];
+        var value;
+        index = index % this.stockLength;
+        if (index < 0) {
+            index = this.stockLength + index;
+        }
+        return this.stock[index];
     }
 });
 

@@ -35,5 +35,6 @@ Game.Resources.Tileset = Game.Class({
                                   (y * this.tileHeight - camera.offset.y) * display.scale,
                                   this.tileWidth * display.scale, 
                                   this.tileHeight * display.scale);
+
     }
 });

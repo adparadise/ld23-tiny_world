@@ -23,6 +23,5 @@ Game.Display.Backbuffer = Game.Class({
                                   (offset.y - camera.offset.y + display.height / 2) * display.scale,
                                   this.width * display.scale,
                                   this.height * display.scale);
-        
     }
 });
