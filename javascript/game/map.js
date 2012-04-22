@@ -6,7 +6,7 @@ Game.Map = Game.Class({
         this.height = height;
         this.tilesetName = tilesetName;
 
-        this.mapGenerator = new Game.MapGenerator(width, height);
+        this.mapGenerator = new Game.Map.Generator(width, height);
         this.buildCells();
         this.bakeCells();
     },

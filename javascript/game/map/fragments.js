@@ -1,15 +1,15 @@
 "use strict";
 
-Game.MapFragments = Game.Class({
+Game.Map.Fragments = Game.Class({
     initialize: function (width, height, seed) {
         this.width = width;
         this.height = height;
         if (!seed) {
-            if (!Game.MapFragments._seed) {
-                Game.MapFragments._seed = 0;
+            if (!Game.Map.Fragments._seed) {
+                Game.Map.Fragments._seed = 0;
             }
-            Game.MapFragments._seed += 1;
-            seed = Game.MapFragments._seed;
+            Game.Map.Fragments._seed += 1;
+            seed = Game.Map.Fragments._seed;
         }
         this.border = 2;
         this.seed = seed;
@@ -33,7 +33,7 @@ Game.MapFragments = Game.Class({
 
     findContinuities: function () {
         var fragments = this;
-        this.continuities = new Game.MapFragmentContinuities();
+        this.continuities = new Game.Map.Continuities();
 
         this.overwrite(function (x, y) {
             var self, south, east;

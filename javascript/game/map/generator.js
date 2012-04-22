@@ -1,10 +1,10 @@
 "use strict";
 
-Game.MapGenerator = Game.Class({
+Game.Map.Generator = Game.Class({
     initialize: function (width, height) {
         this.width = width;
         this.height = height;
-        this.fragments = new Game.MapFragments(40, 30);
+        this.fragments = new Game.Map.Fragments(40, 30);
     },
 
     render: function (display) {

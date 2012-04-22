@@ -1,6 +1,6 @@
 "use strict";
 
-Game.MapFragmentContinuities = Game.Class({
+Game.Map.Continuities = Game.Class({
     initialize: function () {
         this.offsetMarker = 10;
         this.bounds = [];
