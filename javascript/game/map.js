@@ -12,7 +12,7 @@ Game.Map = Game.Class({
         this.cameraPanel = {
             r: 0,
             s: 0
-        }
+        };
     },
 
     panelIndex: function (r, s) {
@@ -185,7 +185,7 @@ Game.Map = Game.Class({
     releaseOldPanels: function () {
         var map = this;
         var toRelease = [];
-        var i, panelIndex, panel
+        var i, panelIndex, panel;
         if (!this._releaseAttempts) {
             this._releaseAttempts = 50;
 
@@ -208,8 +208,7 @@ Game.Map = Game.Class({
                 delete this._recentlyRendered[panelIndex];
                 panel = this.panels[panelIndex];
                 if (panel) {
-                    console.log("releasing: " + panelIndex);
-                    panel.releaseBackbuffer()
+                    panel.releaseBackbuffer();
                 }
             }
 
@@ -226,9 +225,9 @@ Game.Map = Game.Class({
         var panelHeight = this.tileset.tileHeight * this.panelHeight;
         
         minR = Math.floor((camera.offset.x -  display.width / 2) / panelWidth);
-        maxR = Math.ceil( (camera.offset.x +  display.width / 2) / panelWidth);
+        maxR = Math.ceil((camera.offset.x +  display.width / 2) / panelWidth);
         minS = Math.floor((camera.offset.y - display.height / 2) / panelHeight);
-        maxS = Math.ceil( (camera.offset.y + display.height / 2) / panelHeight);
+        maxS = Math.ceil((camera.offset.y + display.height / 2) / panelHeight);
 
         this.cameraPanel.r = Math.floor(camera.offset.x / panelWidth);
         this.cameraPanel.s = Math.floor(camera.offset.y / panelHeight);

@@ -88,15 +88,25 @@ if(e&&c){_.each(c,function(f){a.buttonState[f]=false
 }});
 this.events=[]
 }});
-Game.Map=Game.Class({initialize:function(b,a,c){this.width=b;
-this.height=a;
-this.panelWidth=16;
+Game.Map=Game.Class({initialize:function(b,a,c){this.panelWidth=16;
 this.panelHeight=16;
-this.panelsWide=Math.ceil(this.width/this.panelWidth);
-this.panelsHigh=Math.ceil(this.height/this.panelHeight);
 this.tilesetName=c;
-this.buildPanels();
-this.bakePanels()
+this.generator=new Game.Map.Generator(this.panelWidth,this.panelHeight);
+this.panels={};
+this.cameraPanel={r:0,s:0}
+},panelIndex:function(b,a){return""+b+"_"+a
+},buildPanel:function(c,b){var d=this.panelIndex(c,b);
+var e={x:this.panelWidth*c,y:this.panelHeight*b};
+var a=new Game.Map.Panel(this.panelWidth,this.panelHeight,e,d,this.tilesetName);
+this.panels[d]=a
+},resolveResources:function(a){this.tileset=a.tileset[this.tilesetName]
+},getPanel:function(c,b,a){var d=this.panelIndex(c,b);
+if(!this.panels[d]&&!a){this.buildPanel(c,b)
+}return this.panels[d]
+},getPanelForRendering:function(c,b){var a=this.getPanel(c,b);
+if(!a.isBaked){this.bakePanel(a);
+a.resolveResources(Game.instance.resources)
+}return a
 },buildPanels:function(){var b,a;
 var d;
 var c;
@@ -109,25 +119,7 @@ b<this.panelsWide;
 b++){c={x:this.panelWidth*b,y:this.panelHeight*a};
 d.push(new Game.Map.Panel(this.panelWidth,this.panelHeight,c,this.tilesetName))
 }this.panels.push(d)
-}},resolveResources:function(d){this.tileset=d.tileset[this.tilesetName];
-var c,b;
-var a;
-for(b=this.panelsHigh;
-b--;
-){for(c=this.panelsWide;
-c--;
-){a=this.panels[b][c];
-a.resolveResources(d);
-a.buildBackbuffer()
-}}},bakePanels:function(){var c,b;
-var a;
-for(b=this.panelsHigh;
-b--;
-){for(c=this.panelsWide;
-c--;
-){a=this.panels[b][c];
-this.bakePanel(a)
-}}},bakePanel:function(a){var e,d;
+}},bakePanel:function(a){var e,d;
 var h,g;
 var c;
 var f,k;
@@ -143,16 +135,17 @@ c=this.cellNeighbors(h,g);
 f=Game.Constants.resourceDefinitions[this.tilesetName].rules[c];
 if(!f){f="_blank"
 }k=Game.Constants.resourceDefinitions[this.tilesetName].sets[f];
-b=Game.random.get(g*(this.width+2)+h);
+b=Game.random.get(g*(this.panelWidth+2)+h);
 l=this.getAt(h,g);
 l.tileID=k[b%k.length]
-}}},getAt:function(a,e){var d,c;
+}}a.isBaked=true
+},getAt:function(a,e){var d,c;
 var b;
 d=Math.floor(a/this.panelWidth);
 c=Math.floor(e/this.panelHeight);
-if(this.panels[c]){b=this.panels[c][d]
-}if(b){return b.getAt(a,e)
-}},getAttributeAt:function(b,e,c,d){var a=this.getAt(b,e);
+b=this.getPanel(d,c);
+return b.getAt(a,e)
+},getAttributeAt:function(b,e,c,d){var a=this.getAt(b,e);
 if(!a||!a[c]){return d
 }return a[c]
 },cellNeighbors:function(a,f,e){var d,b;
@@ -189,18 +182,50 @@ l=Math.floor((e.y+p*c.radius)/this.tileset.tileHeight);
 o=this.getAttributeAt(m,l,"solid");
 i=this.getAttributeAt(h,l,"solid");
 if(!o||!i){e.y=((l+j)*this.tileset.tileHeight)-p*(c.radius+g)
-}},render:function(f,d,e){var c,b;
-var a;
-for(b=this.panelsHigh;
+}},recentlyRendered:function(a){if(!this._recentlyRendered){this._recentlyRendered={}
+}if(!this._nextRecentIndex){this._nextRecentIndex=1
+}this._recentlyRendered[a.panelIndex]=this._nextRecentIndex
+},releaseOldPanels:function(){var e=this;
+var d=[];
+var b,c,a;
+if(!this._releaseAttempts){this._releaseAttempts=50;
+if(!this._nextRecentIndex){this._nextRecentIndex=1
+}this._nextRecentIndex+=1;
+_.each(this._recentlyRendered,function(f,g){if(f<e._nextRecentIndex-10){d.push(g)
+}});
+for(b=d.length;
 b--;
-){for(c=this.panelsWide;
-c--;
-){a=this.panels[b][c];
-a.render(f,d)
-}}}});
+){c=d[b];
+delete this._recentlyRendered[c];
+a=this.panels[c];
+if(a){a.releaseBackbuffer()
+}}}else{this._releaseAttempts-=1
+}},render:function(k,i,d){var h,f;
+var g,e;
+var c,l;
+var b=this.tileset.tileWidth*this.panelWidth;
+var j=this.tileset.tileHeight*this.panelHeight;
+h=Math.floor((i.offset.x-k.width/2)/b);
+f=Math.ceil((i.offset.x+k.width/2)/b);
+g=Math.floor((i.offset.y-k.height/2)/j);
+e=Math.ceil((i.offset.y+k.height/2)/j);
+this.cameraPanel.r=Math.floor(i.offset.x/b);
+this.cameraPanel.s=Math.floor(i.offset.y/j);
+for(l=g;
+l<e;
+l++){for(c=h;
+c<f;
+c++){var a=this.getPanelForRendering(c,l);
+a.render(k,i,d);
+this.recentlyRendered(a)
+}}this.releaseOldPanels()
+}});
 Game.Random=Game.Class({initialize:function(a){this.stock=a||Game.Random.stock;
 this.stockLength=this.stock.length
-},get:function(a){return this.stock[a%this.stockLength]
+},get:function(a){var b;
+a=a%this.stockLength;
+if(a<0){a=this.stockLength+a
+}return this.stock[a]
 }});
 Game.Random.stock=[238,146,75,165,166,16,135,220,89,214,17,247,94,241,190,229,238,92,55,180,155,36,28,218,80,224,249,16,82,70,215,97,3,107,18,125,250,15,43,75,201,31,129,28,106,53,163,150,10,207,79,252,192,202,150,226,115,200,191,187,244,233,67,158,152,128,127,174,163,56,163,241,141,192,214,60,190,66,178,119,17,95,211,2,132,144,69,250,1,100,207,128,113,234,174,111,135,227,61,132,175,167,68,28,26,41,96,149,195,210,139,7,88,80,151,240,175,106,35,10,92,76,88,107,50,177,189,227,247,29,126,92,66,52,96,1,29,121,135,212,83,45,230,182,122,160,75,98,155,54,4,23,162,44,35,172,103,83,184,224,137,254,158,156,116,156,10,250,46,16,233,60,194,70,26,31,16,219,158,34,195,199,190,46,13,247,123,17,14,156,194,25,186,169,217,115,39,44,111,46,165,9,50,24,65,230,158,92,222,154,60,163,162,53,122,196,250,91,197,177,233,130,178,24,5,218,40,14,11,65,39,68,87,150,39,57,40,136,184,18,12,210,211,205,189,131,160,18,162,172,62,73,115,209,92,30,85,101,189,30,119,95,9,236,54,250,152,136,55,166,166,198,219,135,69,195,62,245,234,205,183,199,47,44,198,210,90,229,58,48,108,250,251,122,24,12,185,55,104,74,195,16,222,140,243,239,111,88,1,98,202,13,21,93,93,108,231,25,231,3,21,38,213,101,99,126,115,46,160,133,75,21,169,171,48,254,73,230,230,74,62,76,175,179,90,184,8,102,60,43,213,27,198,122,108,71,91,11,69,111,0,217,247,240,238,136,62,159,137,50,244,171,44,31,235,80,159,27,52,44,157,26,68,74,6,224,90,116,145,69,111,243,221,129,152,168,87,197,159,232,120,36,86,92,24,11,208,252,51,220,2,10,6,39,176,73,206,224,47,48,49,39,104,128,3,56,232,183,90,244,51,29,151,203,215,229,191,189,22,142,253,178,218,205,28,58,212,142,249,98,25,194,121,108,203,196,29,212,244,21,82,216,33,128,36,4,213,112,86,175,231,174,157,220,17,140,86,42,10,165,184,54,120,227,219,241,196,55,61,42,94,105,106,231,83,97,150,127,54,139,101,232,141,100,196,197,58,110,108,233,58,227,201,249,214,227,252,188,150,69,102,223,253,108,134,133,186,162,184,126,121,12,227,177,185,187,111,233,211,104,217,157,145,185,78,184,209,122,17,169,120,76,82,94,232,71,83,192,227,26,48,251,114,97,153,177,49,235,139,64,53,129,220,92,247,83,179,35,243,24,81,218,232,230,15,11,248,16,199,32,61,31,213,131,0,39,229,5,57,181,209,130,1,245,97,223,171,68,249,130,49,197,8,147,67,20,214,230,98,105,69,103,83,101,207,242,48,142,246,254,144,84,63,122,66,145,84,99,51,210,116,70,96,155,219,103,37,16,11,126,54,114,115,169,198,215,229,2,11,34,252,209,72,216,81,243,21,188,252,211,189,246,228,244,81,44,100,190,148,222,24,99,209,253,9,40,157,155,53,93,142,4,244,113,67,84,221,226,16,25,59,214,16,209,15,30,153,48,66,174,72,48,66,69,252,114,227,53,183,154,37,249,206,90,119,126,82,40,251,129,128,213,52,179,178,109,114,73,61,230,229,112,134,110,59,219,206,90,228,75,79,245,55,42,126,89,219,128,5,53,81,220,67,245,218,51,42,54,27,203,132,158,5,196,204,126,91,209,28,236,184,76,202,180,250,174,133,66,211,185,93,48,210,67,124,149,207,4,85,138,38,164,161,131,64,97,200,94,27,204,81,163,111,170,116,251,187,23,164,21,87,98,20,60,254,29,129,198,18,26,240,22,180,14,144,73,232,128,177,49,35,240,196,249,195,20,187,57,244,22,231,174,10,131,132,1,242,135,96,41,34,65,73,120,152,35,81,90,80,91,29,105,56,182,90,195,171,130,244,190,46,88,251,171,183,59,109,156,252,69,34,9,215,185,61,128,177,81,7,21,129,185,64,228,131,238,81,254,247,27,184,47,249,37,155,91,199,91,107,77,208,3,221,165,108,156,29,167,203,0,5,105,114,189,2,141,154,219,194,140,25,244,44,205,228,35,140,167,158,196,177,73,23,55,240,233,219,63,121,51,230,248,8,3,136,36,169,124,66,90,156,133,125,189,202,191,39,73,67,196,81,168,95,96,120,69,182,6,50,235,235,145,221,240,164,120,137,175,200,205,73,113,32,90,73,163,191,138,254,161,175,93,1,154,197,92,91,139,100,156,51,137,80,231];
 Game.Resources=Game.Class({initialize:function(){},loadResources:function(a,c){var d=this;
@@ -433,23 +458,72 @@ a=true
 }}});
 Game.Display.Backbuffer=Game.Class({initialize:function(b,a){this.width=b;
 this.height=a;
-this.$buffer=Game.$("<canvas></canvas>");
+this.scale=1
+},claim:function(){if(!this.$buffer){this.$buffer=Game.$("<canvas></canvas>");
 this.$buffer[0].width=this.width;
 this.$buffer[0].height=this.height;
-this.context=this.$buffer[0].getContext("2d");
-this.scale=1
+this.context=this.$buffer[0].getContext("2d")
+}},isClaimed:function(){return !!this.$buffer
+},release:function(){delete this.context;
+delete this.$buffer
 },render:function(b,a,c){c=c||{x:0,y:0};
 b.context.drawImage(this.$buffer[0],0,0,this.width,this.height,(c.x-a.offset.x+b.width/2)*b.scale,(c.y-a.offset.y+b.height/2)*b.scale,this.width*b.scale,this.height*b.scale)
 }});
-Game.Map.Generator=Game.Class({initialize:function(b,a){this.width=b;
-this.height=a;
-this.fragments=new Game.Map.Fragments(40,30)
+Game.Map.Generator=Game.Class({initialize:function(b,a){this.panelWidth=b;
+this.panelHeight=a;
+this.buildFragmentPool();
+this.panelMasses={};
+this.massInstances=[]
+},buildFragmentPool:function(){var e,c;
+var b=30;
+var a,d;
+var f=256;
+this.fragmentPool=[];
+for(e=b;
+e--;
+){a=new Game.Map.Fragments(30,40,e);
+d=a.getFragmentReferences();
+for(c=d.length;
+c--;
+){this.fragmentPool.push(d[c]);
+if(this.fragmentPool.length>=f){break
+}}if(this.fragmentPool.length>=f){break
+}}},getNewMassInstance:function(){var b=this.massInstances.length;
+var c=Game.random.get(b+600);
+var a={id:b,reference:c%this.fragmentPool.length,offset:{x:0,y:0}};
+return a
+},panelMassIndex:function(b,a){return""+b+"_"+a
+},populatePanel:function(d,c){var b=this.panelMassIndex(d,c);
+var a=this.panelMasses[b];
+var e=this.getNewMassInstance();
+e.offset.x=d*this.panelWidth;
+e.offset.y=c*this.panelHeight;
+a.massInstances.push(e)
+},getPanelMasses:function(d,c){var b=this.panelMassIndex(d,c);
+var a;
+if(!this.panelMasses[b]){this.panelMasses[b]={isComplete:false,massInstances:[]};
+this.populatePanel(d,c)
+}a=this.panelMasses[b];
+return a
 },render:function(a){this.fragments.render(a)
+},getSolids:function(f,e){var a=this.getPanelMasses(f,e);
+var c=[];
+var g;
+var d,b;
+for(b=this.panelHeight;
+b--;
+){g=[];
+for(d=this.panelWidth;
+d--;
+){g.push((b*(this.panelWidth+1)+d)%2)
+}c.push(g)
+}return c
 }});
-Game.Map.Panel=Game.Class({initialize:function(b,a,d,c){this.width=b;
+Game.Map.Panel=Game.Class({initialize:function(b,a,e,d,c){this.panelIndex=d;
+this.width=b;
 this.height=a;
 this.tilesetName=c;
-this.offset=d;
+this.offset=e;
 this.buildCells()
 },buildCells:function(){var a,c;
 var b;
@@ -459,7 +533,7 @@ c<this.height;
 c++){b=[];
 for(a=0;
 a<this.width;
-a++){b.push({solid:1})
+a++){b.push({solid:(c*(this.width+1)+a)%5})
 }this.cells.push(b)
 }},resolveResources:function(a){this.tileset=a.tileset[this.tilesetName];
 this.buildBackbuffer()
@@ -468,8 +542,11 @@ if(!a||!a[c]){return d
 }return a[c]
 },getAt:function(a,b){if(this.cells[b-this.offset.y]){return this.cells[b-this.offset.y][a-this.offset.x]
 }},buildBackbuffer:function(){this.backbuffer=new Game.Display.Backbuffer(this.width*this.tileset.tileWidth,this.height*this.tileset.tileHeight);
+this.claimBackbuffer()
+},claimBackbuffer:function(){if(!this.backbuffer.isClaimed()){this.backbuffer.claim();
 this.renderToBackbuffer()
-},renderToBackbuffer:function(){var b,c;
+}},releaseBackbuffer:function(){if(this.backbuffer.isClaimed()){this.backbuffer.release()
+}},renderToBackbuffer:function(){var b,c;
 var a;
 for(c=this.height;
 c--;
@@ -477,7 +554,8 @@ c--;
 b--;
 ){a=this.cells[c][b];
 this.tileset.drawTile(this.backbuffer,{offset:{x:0,y:0}},a,b,c)
-}}},render:function(c,a,b){this.backbuffer.render(c,a,{x:this.offset.x*this.tileset.tileWidth,y:this.offset.y*this.tileset.tileHeight})
+}}},render:function(c,a,b){this.claimBackbuffer();
+this.backbuffer.render(c,a,{x:this.offset.x*this.tileset.tileWidth,y:this.offset.y*this.tileset.tileHeight})
 }});
 Game.Map.Fragments=Game.Class({initialize:function(c,a,b){this.width=c;
 this.height=a;
@@ -486,8 +564,10 @@ if(!b){if(!Game.Map.Fragments._seed){Game.Map.Fragments._seed=0
 b=Game.Map.Fragments._seed
 }this.border=2;
 this.seed=b;
-this.seed=new Date().getTime();
-this.generate()
+this.generate();
+this.findContinuities();
+this.clean()
+},clean:function(){this.fixed=undefined
 },generate:function(){var a=this;
 this.fixed=this.seedCells(256*0.03);
 this.cells=this.seedCells(128);
@@ -498,8 +578,7 @@ this.apply(function(b,c){return a.filledCount(b,c)<5?1:0
 this.apply(function(b,c){return a.filledCount(b,c)<5?1:0
 });
 this.apply(function(b,c){return a.filledCount(b,c)<5?1:0
-});
-this.findContinuities()
+})
 },findContinuities:function(){var a=this;
 this.continuities=new Game.Map.Continuities();
 this.overwrite(function(b,h){var c,g,f;
@@ -561,6 +640,14 @@ if(e<b){f=1
 }}g.push(f)
 }c.push(g)
 }return c
+},getFragmentReferences:function(){var c=[];
+var a;
+var b;
+for(b=this.continuities.masses.length;
+b--;
+){a=new Game.Map.FragmentReference(this,b);
+c.push(a)
+}return c
 },render:function(g){var j,h;
 var k=8;
 var d={x:60,y:40};
@@ -578,6 +665,12 @@ if(f){c="#"+(f*5).toString(16)+"0"
 }g.context.fillStyle=c;
 g.context.fillRect(j*k+d.x,h*k+d.y,k,k)
 }}this.continuities.render(g,d,k)
+}});
+Game.Map.FragmentReference=Game.Class({initialize:function(a,b){var c=a.continuities.masses[b];
+this.fragments=a;
+this.index=b;
+this.width=c.maxX-c.minX;
+this.height=c.maxY-c.minY
 }});
 Game.Map.Continuities=Game.Class({initialize:function(){this.offsetMarker=10;
 this.bounds=[]
