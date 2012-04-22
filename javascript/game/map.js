@@ -43,6 +43,7 @@ Game.Map = Game.Class({
             this.bakePanel(panel);
             panel.resolveResources(Game.instance.resources);
         }
+        return panel;
     },
 
     buildPanels: function () {
@@ -167,7 +168,26 @@ Game.Map = Game.Class({
         }
     },
 
+    panelIDFromCoords: function (x, y) {
+    },
+
     render: function (display, camera, resources) {
-        this.getPanelForRendering(0, 0);
+        var minR, maxR;
+        var minS, maxS;
+        var r, s;
+        var panelWidth = this.tileset.tileWidth * this.panelWidth;
+        var panelHeight = this.tileset.tileHeight * this.panelHeight;
+        
+        minR = Math.floor((camera.offset.x -  display.width / 2) / panelWidth);
+        maxR = Math.ceil( (camera.offset.x +  display.width / 2) / panelWidth);
+        minS = Math.floor((camera.offset.y - display.height / 2) / panelHeight);
+        maxS = Math.ceil( (camera.offset.y + display.height / 2) / panelHeight);
+
+        for (s = minS; s < maxS; s++) {
+            for (r = minR; r < maxR; r++) {
+                var panel = this.getPanelForRendering(r, s);
+                panel.render(display, camera, resources);
+            }
+        }
     }
 });

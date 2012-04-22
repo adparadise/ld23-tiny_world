@@ -18,7 +18,7 @@ Game.Map.Panel = Game.Class({
             row = [];
             for (x = 0; x < this.width; x++) {
                 row.push({
-                    solid: 1
+                    solid: (y * (this.width + 1) + x) % 5
                 });
             }
             this.cells.push(row);
