@@ -6,7 +6,8 @@ Game.Map = Game.Class({
         this.height = height;
         this.tilesetName = tilesetName;
 
-        this.buildCells();
+        this.mapGenerator = new Game.MapGenerator(width, height);
+        this.buildCells(Game.Constants.maps.map1);
         this.bakeCells();
     },
 
@@ -14,7 +15,7 @@ Game.Map = Game.Class({
         this.tileset = resources.tileset[this.tilesetName];
     },
 
-    buildCells: function () {
+    buildCells: function (map) {
         var x, y;
         var row;
         this.cells = [];
@@ -22,7 +23,7 @@ Game.Map = Game.Class({
             row = [];
             for (x = 0; x < this.width; x++) {
                 row.push({
-                    solid: Game.Constants.maps.map1[y][x]
+                    solid: map[y][x]
                 });
             }
             this.cells.push(row);
@@ -138,5 +139,6 @@ Game.Map = Game.Class({
                 this.tileset.drawTile(display, camera, cell, x, y);
             }
         }
+        this.mapGenerator.render(display);
     }
 });
