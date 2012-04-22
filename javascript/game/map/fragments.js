@@ -14,9 +14,14 @@ Game.Map.Fragments = Game.Class({
         }
         this.border = 2;
         this.seed = seed;
-        this.seed = new Date().getTime();
 
         this.generate();
+        this.findContinuities();
+        this.clean();
+    },
+
+    clean: function () {
+        this.fixed = undefined;
     },
 
     generate: function () {
@@ -36,8 +41,6 @@ Game.Map.Fragments = Game.Class({
         this.apply(function (x, y) { 
             return fragments.filledCount(x, y) < 5 ? 1 : 0; 
         });
-
-        this.findContinuities();
     },
 
     findContinuities: function () {
@@ -148,6 +151,18 @@ Game.Map.Fragments = Game.Class({
             cells.push(row);
         }
         return cells;
+    },
+
+    getFragmentReferences: function () {
+        var references = [];
+        var reference;
+        var i;
+        for (i = this.continuities.masses.length; i--;) {
+            reference = new Game.Map.FragmentReference(this, i);
+            references.push(reference);
+        }
+
+        return references;
     },
 
     render: function (display) {

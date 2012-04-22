@@ -24,6 +24,7 @@ head.js(
             "javascript/game/map/generator.js",
             "javascript/game/map/panel.js",
             "javascript/game/map/fragments.js",
+            "javascript/game/map/fragment_reference.js",
             "javascript/game/map/continuities.js",
 
             function () {

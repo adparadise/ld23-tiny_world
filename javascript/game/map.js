@@ -3,16 +3,46 @@
 
 Game.Map = Game.Class({
     initialize: function (width, height, tilesetName) {
-        this.width = width;
-        this.height = height;
         this.panelWidth = 16;
         this.panelHeight = 16;
-        this.panelsWide = Math.ceil(this.width / this.panelWidth);
-        this.panelsHigh = Math.ceil(this.height / this.panelHeight);
         this.tilesetName = tilesetName;
 
-        this.buildPanels();
-        this.bakePanels();
+        this.generator = new Game.Map.Generator(this.panelWidth, this.panelHeight);
+        this.panels = {};
+    },
+
+    panelIndex: function (r, s) {
+        return "" + r + "_" + s;
+    },
+
+    buildPanel: function (r, s) {
+        var panelIndex = this.panelIndex(r, s);
+        var offset = {
+            x: this.panelWidth * r,
+            y: this.panelHeight * s
+        };
+        var panel = new Game.Map.Panel(this.panelWidth, this.panelHeight, offset, this.tilesetName);
+        this.panels[panelIndex] = panel;
+    },
+
+    resolveResources: function (resources) {
+        this.tileset = resources.tileset[this.tilesetName];
+    },
+
+    getPanel: function (r, s) {
+        var panelIndex = this.panelIndex(r, s);
+        if (!this.panels[panelIndex]) {
+            this.buildPanel(r, s);
+        }
+        return this.panels[panelIndex];
+    },
+
+    getPanelForRendering: function (r, s) {
+        var panel = this.getPanel(r, s);
+        if (!panel.isBaked) {
+            this.bakePanel(panel);
+            panel.resolveResources(Game.instance.resources);
+        }
     },
 
     buildPanels: function () {
@@ -33,30 +63,6 @@ Game.Map = Game.Class({
         }
     },
 
-    resolveResources: function (resources) {
-        this.tileset = resources.tileset[this.tilesetName];
-        var i, j;
-        var panel;
-        for (j = this.panelsHigh; j--;) {
-            for (i = this.panelsWide; i--;) {
-                panel = this.panels[j][i];
-                panel.resolveResources(resources);
-                panel.buildBackbuffer();
-            }
-        }
-    },
-
-    bakePanels: function () {
-        var i, j;
-        var panel;
-        for (j = this.panelsHigh; j--;) {
-            for (i = this.panelsWide; i--;) {
-                panel = this.panels[j][i];
-                this.bakePanel(panel);
-            }
-        }
-    },
-
     bakePanel: function (panel) {
         var i, j;
         var x, y;
@@ -74,24 +80,21 @@ Game.Map = Game.Class({
                     setName = '_blank';
                 }
                 set = Game.Constants.resourceDefinitions[this.tilesetName].sets[setName];
-                psuedoRandom = Game.random.get(y * (this.width + 2) + x);
+                psuedoRandom = Game.random.get(y * (this.panelWidth + 2) + x);
                 cell = this.getAt(x, y);
                 cell.tileID = set[psuedoRandom % set.length];
             }
         }
+        panel.isBaked = true;
     },
 
     getAt: function (x, y) {
-        var panelX, panelY;
+        var r, s;
         var panel;
-        panelX = Math.floor(x / this.panelWidth);
-        panelY = Math.floor(y / this.panelHeight);
-        if (this.panels[panelY]) {
-            panel = this.panels[panelY][panelX];
-        }
-        if (panel) {
-            return panel.getAt(x, y);
-        }
+        r = Math.floor(x / this.panelWidth);
+        s = Math.floor(y / this.panelHeight);
+        panel = this.getPanel(r, s);
+        return panel.getAt(x, y);
     },
 
     getAttributeAt: function (x, y, attribute, def) {
@@ -165,13 +168,6 @@ Game.Map = Game.Class({
     },
 
     render: function (display, camera, resources) {
-        var i, j;
-        var panel;
-        for (j = this.panelsHigh; j--;) {
-            for (i = this.panelsWide; i--;) {
-                panel = this.panels[j][i];
-                panel.render(display, camera);
-            }
-        }
+        this.getPanelForRendering(0, 0);
     }
 });
