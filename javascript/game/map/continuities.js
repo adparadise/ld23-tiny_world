@@ -1,3 +1,4 @@
+/*global Game, head, window, $, _*/
 "use strict";
 
 Game.Map.Continuities = Game.Class({
@@ -12,8 +13,10 @@ Game.Map.Continuities = Game.Class({
             value = this.bounds.length + this.offsetMarker;
             this.bounds.push({
                 value: value,
-                minX: x, maxX: x,
-                minY: y, maxY: y
+                minX: x, 
+                maxX: x,
+                minY: y, 
+                maxY: y
             });
         } else {
             value = this.resolveLowest(value);
@@ -90,7 +93,7 @@ Game.Map.Continuities = Game.Class({
 
     finalize: function (cells, width, height) {
         var continuities = this;
-        var value, resolvedValue
+        var value, resolvedValue;
         var x, y;
         var keepers = {};
         for (y = height; y--;) {

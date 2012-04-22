@@ -1,4 +1,5 @@
-
+/*global Game, head, window, $, _*/
+"use strict";
 
 Game.Screen.Gameplay = Game.Class({
     initialize: function () {
@@ -62,7 +63,7 @@ Game.Screen.Gameplay = Game.Class({
         var i;
         var isPlayerRendered;
         this.map.render(display, this.camera, resources, frameNumber);
-        this.enemies.sort(function(a, b) {
+        this.enemies.sort(function (a, b) {
             if (a.position.y < b.position.y) {
                 return 1;
             } else if (a.position.y > b.position.y) {

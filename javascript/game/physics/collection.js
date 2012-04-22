@@ -1,3 +1,4 @@
+/*global Game, head, window, $, _*/
 "use strict";
 
 Game.Physics.Collection = Game.Class({

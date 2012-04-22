@@ -1,3 +1,4 @@
+/*global Game, head, window, $, _*/
 "use strict";
 
 Game.Application = Game.Class({
@@ -15,7 +16,7 @@ Game.Application = Game.Class({
         this.screen = new Game.Screen.Gameplay();
 
         // Report that we've begun.
-        this.usage.report({event:"start"});
+        this.usage.report({event: "start"});
     },
 
     ready: function () {
@@ -28,7 +29,7 @@ Game.Application = Game.Class({
         var renderCallback = function () {
             application.render();
             window.requestAnimationFrame(renderCallback);
-        }
+        };
 
         this.frameNumber = 0;
         window.requestAnimationFrame(renderCallback);

@@ -1,3 +1,4 @@
+/*global Game, head, window, $, _*/
 "use strict";
 
 Game.Resources.Spritesheet = Game.Class({
@@ -25,7 +26,7 @@ Game.Resources.Spritesheet = Game.Class({
         return {
             u: u,
             v: (spriteID - u) / this.width
-        }
+        };
     },
 
     drawSprite: function (display, camera, spriteID, x, y, span) {

@@ -1,3 +1,4 @@
+/*global Game, head, window, $, _*/
 "use strict";
 
 Game.Characters.Player = Game.Class({
@@ -73,7 +74,7 @@ Game.Characters.Player = Game.Class({
 
     resolveState: function (frameNumber) {
         if (this.velocity.x !== 0 || this.velocity.y !== 0) {
-            if (this.state != 'moving') {
+            if (this.state !== 'moving') {
                 this.state = 'moving';
                 this.inStateSince = frameNumber;
             }
@@ -117,7 +118,7 @@ Game.Characters.Player = Game.Class({
         if (this.isDead) {
             span = 2;
         }
-        resources.spritesheet['player'].drawSprite(display, camera, spriteID, 
-                                                   this.position.x, this.position.y, span);
+        resources.spritesheet.player.drawSprite(display, camera, spriteID, 
+                                                this.position.x, this.position.y, span);
     }
 });

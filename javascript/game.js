@@ -1,3 +1,4 @@
+/*global Game, head, window, $, _*/
 "use strict";
 
 var Game = {

@@ -1,3 +1,4 @@
+/*global Game, head, window, $, _*/
 "use strict";
 
 Game.Input = Game.Class({
@@ -54,7 +55,7 @@ Game.Input = Game.Class({
         case 40:
         case 83:
             return ['up'];
-        };
+        }
     },
 
     keyCodeToSymbol: function (keyCode) {
@@ -71,7 +72,7 @@ Game.Input = Game.Class({
         case 40:
         case 83:
             return 'down';
-        };
+        }
     },
 
     step: function () {

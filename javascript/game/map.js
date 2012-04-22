@@ -1,3 +1,4 @@
+/*global Game, head, window, $, _*/
 "use strict";
 
 Game.Map = Game.Class({
@@ -7,7 +8,7 @@ Game.Map = Game.Class({
         this.panelWidth = 16;
         this.panelHeight = 16;
         this.panelsWide = Math.ceil(this.width / this.panelWidth);
-        this.panelsHigh = Math.ceil(this.height / this.panelHeight)
+        this.panelsHigh = Math.ceil(this.height / this.panelHeight);
         this.tilesetName = tilesetName;
 
         this.buildPanels();
@@ -57,7 +58,7 @@ Game.Map = Game.Class({
     },
 
     bakePanel: function (panel) {
-        var i, j
+        var i, j;
         var x, y;
         var cellNeighbors;
         var setName, set;
@@ -104,7 +105,7 @@ Game.Map = Game.Class({
     cellNeighbors: function (x, y, attribute) {
         var i, j;
         var neighbors = [];
-        attribute = attribute || 'solid'
+        attribute = attribute || 'solid';
         if (this.getAttributeAt(x, y, attribute)) {
             neighbors.push('self');
         }
@@ -143,8 +144,8 @@ Game.Map = Game.Class({
         }
 
         targetX  = Math.floor((targetPosition.x + directionX * object.radius) / this.tileset.tileWidth);
-        targetYL = Math.floor((targetPosition.y + object.radius * .7)         / this.tileset.tileHeight);
-        targetYR = Math.floor((targetPosition.y - object.radius * .7)         / this.tileset.tileHeight);
+        targetYL = Math.floor((targetPosition.y + object.radius * 0.7)        / this.tileset.tileHeight);
+        targetYR = Math.floor((targetPosition.y - object.radius * 0.7)        / this.tileset.tileHeight);
         targetSolidL = this.getAttributeAt(targetX, targetYL, 'solid');
         targetSolidR = this.getAttributeAt(targetX, targetYL, 'solid');
         if (!targetSolidL || !targetSolidR) {
@@ -152,8 +153,8 @@ Game.Map = Game.Class({
                 directionX * (object.radius + nudge);
         }
 
-        targetXL = Math.floor((targetPosition.x + object.radius * .7)         / this.tileset.tileWidth);
-        targetXR = Math.floor((targetPosition.x - object.radius * .7)         / this.tileset.tileWidth);
+        targetXL = Math.floor((targetPosition.x + object.radius * 0.7)        / this.tileset.tileWidth);
+        targetXR = Math.floor((targetPosition.x - object.radius * 0.7)        / this.tileset.tileWidth);
         targetY  = Math.floor((targetPosition.y + directionY * object.radius) / this.tileset.tileHeight);
         targetSolidL = this.getAttributeAt(targetXL, targetY, 'solid');
         targetSolidR = this.getAttributeAt(targetXR, targetY, 'solid');

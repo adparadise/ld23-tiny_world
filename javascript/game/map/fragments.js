@@ -1,3 +1,4 @@
+/*global Game, head, window, $, _*/
 "use strict";
 
 Game.Map.Fragments = Game.Class({
@@ -13,7 +14,7 @@ Game.Map.Fragments = Game.Class({
         }
         this.border = 2;
         this.seed = seed;
-        this.seed = new Date().getTime()
+        this.seed = new Date().getTime();
 
         this.generate();
     },
@@ -23,10 +24,18 @@ Game.Map.Fragments = Game.Class({
         this.fixed = this.seedCells(256 * 0.03);
         this.cells = this.seedCells(128);
         
-        this.apply(function (x, y) { return fragments.filledCount(x, y) < 5 ? 1 : 0; });
-        this.apply(function (x, y) { return fragments.filledCount(x, y) < 5 ? 1 : 0; });
-        this.apply(function (x, y) { return fragments.filledCount(x, y) < 5 ? 1 : 0; });
-        this.apply(function (x, y) { return fragments.filledCount(x, y) < 5 ? 1 : 0; });
+        this.apply(function (x, y) { 
+            return fragments.filledCount(x, y) < 5 ? 1 : 0; 
+        });
+        this.apply(function (x, y) { 
+            return fragments.filledCount(x, y) < 5 ? 1 : 0; 
+        });
+        this.apply(function (x, y) { 
+            return fragments.filledCount(x, y) < 5 ? 1 : 0; 
+        });
+        this.apply(function (x, y) { 
+            return fragments.filledCount(x, y) < 5 ? 1 : 0; 
+        });
 
         this.findContinuities();
     },
@@ -147,7 +156,7 @@ Game.Map.Fragments = Game.Class({
         var offset = {
             x: 60,
             y: 40
-        }
+        };
         var isFixed, isFilled;
         var color;
         var i, bounds;

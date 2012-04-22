@@ -1,3 +1,4 @@
+/*global Game, head, window, $, _*/
 "use strict";
 
 Game.Characters.Enemy = Game.Class({
@@ -9,14 +10,20 @@ Game.Characters.Enemy = Game.Class({
         this.position = {
             x: position.x,
             y: position.y
-        },
+        };
         this.priorPosition =  {
             x: position.x,
             y: position.y
-        },
+        };
         this.distanceTraveled = 0;
-        this.targetVelocity = { x: 0, y: 0 };
-        this.velocity = { x: 0, y: 0 };
+        this.targetVelocity = { 
+            x: 0, 
+            y: 0 
+        };
+        this.velocity = { 
+            x: 0, 
+            y: 0 
+        };
         this.radius = 8;
     },
 
@@ -75,7 +82,7 @@ Game.Characters.Enemy = Game.Class({
         var distance = Math.sqrt(Math.pow(this.priorPosition.x - this.position.x, 2) + 
                                  Math.pow(this.priorPosition.y - this.position.y, 2));
         this.distanceTraveled += distance;
-       
+        
         this.priorPosition.x = this.position.x;
         this.priorPosition.y = this.position.y;
     },
@@ -91,6 +98,6 @@ Game.Characters.Enemy = Game.Class({
 
     render: function (display, camera, resources) {
         var spriteID = this.getSpriteID();
-        resources.spritesheet['enemy'].drawSprite(display, camera, spriteID, this.position.x, this.position.y);
+        resources.spritesheet.enemy.drawSprite(display, camera, spriteID, this.position.x, this.position.y);
     }
 });

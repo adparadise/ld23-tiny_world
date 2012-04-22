@@ -1,3 +1,4 @@
+/*global Game, head, window, $, _*/
 "use strict";
 
 Game.Constants = {
@@ -11,11 +12,11 @@ Game.Constants = {
             width: 10,
             height: 10,
             sets: {
-                solid:      [31,32,41,42,  21,21,21,21],
-                leftEdge:   [35,45,25,55],
-                rightEdge:  [34,44,24,54],
-                topEdge:    [61,62,60,60],
-                bottomEdge: [64,65,63,63],
+                solid:      [31, 32, 41, 42,  21, 21, 21, 21],
+                leftEdge:   [35, 45, 25, 55],
+                rightEdge:  [34, 44, 24, 54],
+                topEdge:    [61, 62, 60, 60],
+                bottomEdge: [64, 65, 63, 63],
                 blCorner: [47],
                 brCorner: [48],
                 tlCorner: [37],
@@ -47,8 +48,8 @@ Game.Constants = {
             },
             sets: {
                 stand: [23],
-                walkLeft: [24,25,26,27,28,29],
-                walkRight: [38,37,36,35,34,33],
+                walkLeft: [24, 25, 26, 27, 28, 29],
+                walkRight: [38, 37, 36, 35, 34, 33],
                 dead: [43]
             }
         },
@@ -64,8 +65,8 @@ Game.Constants = {
                 y: 266
             },
             sets: {
-                roll: [0,1,2,3]
+                roll: [0, 1, 2, 3]
             }
         }
-    },
-}
+    }
+};

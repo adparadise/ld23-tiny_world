@@ -1,0 +1,69 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.homnom.ld23</groupId>
+  <artifactId>ld23</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>ld23</name>
+  <url>http://maven.apache.org</url>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.6</version>
+        <executions>
+          <execution>
+            <phase>compile</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <taskdef name="jslint" classname="com.googlecode.jslint4java.ant.JSLintTask" classpath="${settings.localRepository}/com/googlecode/jslint4java/jslint4java-ant/1.4.2/jslint4java-ant-1.4.2.jar" />
+                <jslint options="white,browser,devel,undef,eqeqeq,bitwise,strict,newcap,immed">
+                  <predef>Ext,Utils</predef>
+                  <formatter type="plain" />
+                  <fileset dir="${basedir}/javascript/game" includes="**/*.js" excludes="${basedir}/javascript/lib/*" />
+                </jslint>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>com.googlecode.jslint4java</groupId>
+            <artifactId>jslint4java-ant</artifactId>
+            <version>1.4.2</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>net.alchim31.maven</groupId>
+        <artifactId>yuicompressor-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>compress</goal>
+            </goals>
+          </execution>
+        </executions>        
+        <configuration>
+          <sourceDirectory>${basedir}/javascript</sourceDirectory>
+          <excludes>
+            <exclude>templates.js</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

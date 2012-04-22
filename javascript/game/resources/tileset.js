@@ -1,3 +1,4 @@
+/*global Game, head, window, $, _*/
 "use strict";
 
 Game.Resources.Tileset = Game.Class({
@@ -21,7 +22,7 @@ Game.Resources.Tileset = Game.Class({
         return {
             u: u,
             v: (tileID - u) / this.width
-        }
+        };
     },
 
     drawTile: function (display, camera, cell, x, y) {

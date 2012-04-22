@@ -1,3 +1,4 @@
+/*global Game, head, window, $, _*/
 "use strict";
 
 Game.Map.Panel = Game.Class({
@@ -63,7 +64,7 @@ Game.Map.Panel = Game.Class({
     render: function (display, camera, resources) {
         this.backbuffer.render(display, camera, {
             x: this.offset.x * this.tileset.tileWidth,
-            y: this.offset.y * this.tileset.tileHeight,
+            y: this.offset.y * this.tileset.tileHeight
         });
     }
 
