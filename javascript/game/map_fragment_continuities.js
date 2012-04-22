@@ -89,9 +89,10 @@ Game.MapFragmentContinuities = Game.Class({
     },
 
     finalize: function (cells, width, height) {
+        var continuities = this;
         var value, resolvedValue
         var x, y;
-        var keepers = [];
+        var keepers = {};
         for (y = height; y--;) {
             for (x = width; x--;) {
                 value = cells[y][x];
@@ -100,16 +101,25 @@ Game.MapFragmentContinuities = Game.Class({
                     if (resolvedValue !== value) {
                         cells[y][x] = resolvedValue;
                     }
+                    keepers[resolvedValue] = true;
                 }
             }
         }
+        this.masses = [];
+        _.each(keepers, function (truth, value) {
+            var bounds = continuities.bounds[value - continuities.offsetMarker];
+            var area = (bounds.maxX - bounds.minX) * (bounds.maxY - bounds.minY);
+            if (area > 10) {
+                continuities.masses.push(bounds);
+            }
+        });
     },
 
     render: function (display, offset, size) {
         var i;
         var bounds;
-        for (i = this.bounds.length; i--;) {
-            bounds = this.bounds[i];
+        for (i = this.masses.length; i--;) {
+            bounds = this.masses[i];
             if (!bounds.isReplacedBy) {
                 display.context.strokeStyle = "#f80";
                 display.context.strokeRect(bounds.minX * size + offset.x, 
