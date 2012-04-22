@@ -21,6 +21,12 @@ Game.Constants = {
                 brCorner: [48],
                 tlCorner: [37],
                 trCorner: [38],
+                topCap: [17],
+                bottomCap: [18],
+                leftCap: [27],
+                rightCap: [28],
+                horizontal: [84, 85, 83, 83],
+                vertical:   [67, 77, 87, 97],
                 _blank: [12]
             },
             rules: {
@@ -32,7 +38,13 @@ Game.Constants = {
                 'e_n_self': 'blCorner',
                 'n_self_w': 'brCorner',
                 'e_s_self': 'tlCorner',
-                's_self_w': 'trCorner'
+                's_self_w': 'trCorner',
+                'e_self_w': 'horizontal',
+                'n_s_self': 'vertical',
+                'e_self': 'leftCap',
+                'n_self': 'bottomCap',
+                'self_w': 'rightCap',
+                's_self': 'topCap'
             }
         },
         player: {
