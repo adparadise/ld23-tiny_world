@@ -50,6 +50,21 @@ Game.Constants = {
                 walkLeft: [24,25,26,27,28,29],
                 walkRight: [38,37,36,35,34,33]
             }
+        },
+        enemy: {
+            type: "spritesheet",
+            url: "images/globe_4up.png",
+            tileWidth: 282,
+            tileHeight: 282,
+            width: 2,
+            height: 2,
+            origin: {
+                x: 141,
+                y: 220
+            },
+            sets: {
+                roll: [0,1,2,3]
+            }
         }
     },
 }

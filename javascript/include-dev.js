@@ -15,6 +15,7 @@ head.js(
             "javascript/game/usage.js",
 
             "javascript/game/characters/player.js",
+            "javascript/game/characters/enemy.js",
             "javascript/game/resources/tileset.js",
             "javascript/game/resources/spritesheet.js",
             "javascript/game/physics/collection.js",

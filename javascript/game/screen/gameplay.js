@@ -8,6 +8,8 @@ Game.Screen.Gameplay = Game.Class({
         this.physicsCollection.addStatic(this.map);
         this.physicsCollection.addObject(this.player);
         this.camera = new Game.Camera();
+        this.enemies = [];
+        this.enemies.push(new Game.Characters.Enemy({x: 500, y: 300}));
     },
 
     resolveResources: function (resources) {
@@ -24,5 +26,6 @@ Game.Screen.Gameplay = Game.Class({
     render: function (display, resources, frameNumber) {
         this.map.render(display, this.camera, resources, frameNumber);
         this.player.render(display, this.camera, resources, frameNumber);
+        this.enemies[0].render(display, this.camera, resources, frameNumber);
     }
 });
