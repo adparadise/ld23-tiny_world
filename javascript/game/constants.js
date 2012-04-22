@@ -54,7 +54,7 @@ Game.Constants = {
         },
         enemy: {
             type: "spritesheet",
-            url: "images/globe_4up.png",
+            url: "images/globe_4up.gif",
             tileWidth: 282,
             tileHeight: 282,
             width: 2,
