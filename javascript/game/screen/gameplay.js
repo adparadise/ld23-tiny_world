@@ -31,10 +31,26 @@ Game.Screen.Gameplay = Game.Class({
         }
 
         this.physicsCollection.resolveVelocities(timeDelta);
+        this.checkForDeath();
 
         this.player.resolveState(frameNumber);
         for (i = this.enemies.length; i--;) {
             this.enemies[i].resolveState(frameNumber);
+        }
+    },
+
+    checkForDeath: function () {
+        var i;
+        var enemy;
+        var distance;
+        for (i = this.enemies.length; i--;) {
+            enemy = this.enemies[i];
+            distance = Math.sqrt(Math.pow(this.player.position.x - enemy.position.x, 2) +
+                                 Math.pow(this.player.position.y - enemy.position.y, 2));
+            if (distance < enemy.radius + this.player.radius) {
+                this.player.wasKilled();
+                break;
+            }
         }
     },
 

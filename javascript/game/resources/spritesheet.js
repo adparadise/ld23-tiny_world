@@ -28,16 +28,20 @@ Game.Resources.Spritesheet = Game.Class({
         }
     },
 
-    drawSprite: function (display, camera, spriteID, x, y) {
+    drawSprite: function (display, camera, spriteID, x, y, span) {
         var uv = this.spriteIDToUV(spriteID);
         var direction = 1;
+        var spanOffset;
+        span = span || 1;
+
         
+        spanOffset = this.tileWidth * (span - 1) / 2;
         display.context.drawImage(this.image, 
                                   uv.u * this.tileWidth, uv.v * this.tileHeight, 
-                                  this.tileWidth, this.tileHeight,
-                                  (x - camera.offset.x - this.origin.x) * display.scale, 
+                                  this.tileWidth * span, this.tileHeight,
+                                  (x - camera.offset.x - this.origin.x - spanOffset) * display.scale, 
                                   (y - camera.offset.y - this.origin.y) * display.scale,
-                                  this.tileWidth * display.scale, 
+                                  this.tileWidth * span * display.scale, 
                                   this.tileHeight * display.scale);
                                   
     }

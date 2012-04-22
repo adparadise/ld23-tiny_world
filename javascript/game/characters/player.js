@@ -11,6 +11,7 @@ Game.Characters.Player = Game.Class({
         this.targetVelocity = { x: 0, y: 0 };
         this.velocity = { x: 0, y: 0 };
         this.radius = 8;
+        this.isDead = false;
         this.state = false;
         this.inStateSince = 0;
     },
@@ -23,6 +24,9 @@ Game.Characters.Player = Game.Class({
     resolveInput: function (input) {
         var xAxis = 0;
         var yAxis = 0;
+        if (this.isDead) {
+            return;
+        }
 
         if (input.buttonState.left) {
             xAxis = -1;
@@ -78,12 +82,20 @@ Game.Characters.Player = Game.Class({
         }
     },
 
+    wasKilled: function () {
+        this.isDead = true;
+        this.targetVelocity.x = 0;
+        this.targetVelocity.y = 0;
+    },
+
     getSpriteID: function (frameNumber) {
         var frameFrequency = 5;
         var framesSinceStart;
         var frameCount = 0;
         var spriteID = 0;
-        if (this.state === 'moving') {
+        if (this.isDead) {
+            return Game.Constants.resourceDefinitions.player.sets.dead[0];
+        } else if (this.state === 'moving') {
             framesSinceStart = Math.floor((frameNumber - this.inStateSince) / frameFrequency);
             if (this.velocity.x > 0) {
                 frameCount = Game.Constants.resourceDefinitions.player.sets.walkRight.length;
@@ -101,6 +113,11 @@ Game.Characters.Player = Game.Class({
 
     render: function (display, camera, resources, frameNumber) {
         var spriteID = this.getSpriteID(frameNumber);
-        resources.spritesheet['player'].drawSprite(display, camera, spriteID, this.position.x, this.position.y);
+        var span = 1;
+        if (this.isDead) {
+            span = 2;
+        }
+        resources.spritesheet['player'].drawSprite(display, camera, spriteID, 
+                                                   this.position.x, this.position.y, span);
     }
 });

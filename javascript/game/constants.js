@@ -48,7 +48,8 @@ Game.Constants = {
             sets: {
                 stand: [23],
                 walkLeft: [24,25,26,27,28,29],
-                walkRight: [38,37,36,35,34,33]
+                walkRight: [38,37,36,35,34,33],
+                dead: [43]
             }
         },
         enemy: {
