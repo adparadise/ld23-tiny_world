@@ -85,11 +85,11 @@ Game.Map.Generator = Game.Class({
         this.addMassInstance(massInstance, r * this.panelWidth, s * this.panelHeight);
         if (Game.random.get(r * 50 + s) > 64) {
             massInstance = this.getNewMassInstance();
-            this.addMassInstance(massInstance, (r + .5) * this.panelWidth, (s + .5) * this.panelHeight);
+            this.addMassInstance(massInstance, (r + 0.5) * this.panelWidth, (s + 0.5) * this.panelHeight);
         }
         if (Game.random.get(r * 50 + s) > 200) {
             massInstance = this.getNewMassInstance();
-            this.addMassInstance(massInstance, (r + .75) * this.panelWidth, (s + .25) * this.panelHeight);
+            this.addMassInstance(massInstance, (r + 0.75) * this.panelWidth, (s + 0.25) * this.panelHeight);
         }
         panelMassList.isComplete = true;
     },

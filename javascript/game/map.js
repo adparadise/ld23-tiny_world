@@ -20,9 +20,9 @@ Game.Map = Game.Class({
         var coords = panel.findClearingCoords();
         if (coords) {
             return {
-                x: (coords.x + .5) * this.tileset.tileWidth,
-                y: (coords.y + .5) * this.tileset.tileHeight,
-            }
+                x: (coords.x + 0.5) * this.tileset.tileWidth,
+                y: (coords.y + 0.5) * this.tileset.tileHeight
+            };
         }
     },
 
