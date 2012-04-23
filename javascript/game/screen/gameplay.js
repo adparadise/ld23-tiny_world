@@ -131,7 +131,7 @@ Game.Screen.Gameplay = Game.Class({
                                  Math.pow(this.player.position.y - enemy.position.y, 2));
             if (distance < enemy.radius + this.player.radius) {
                 this.player.wasKilled();
-                this.deathScreen.show()
+                this.deathScreen.show();
                 break;
             }
         }
