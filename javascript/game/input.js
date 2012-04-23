@@ -8,6 +8,7 @@ Game.Input = Game.Class({
         this.bind();
         this.buttonState = {};
         this.events = [];
+        this.everPressed = false;
     },
 
     bind: function () {
@@ -33,8 +34,11 @@ Game.Input = Game.Class({
         }
     },
 
+
     isWatchedKey: function (keyCode) {
-        if (keyCode >= 37 && keyCode <= 41) {
+        if (keyCode === 82) {
+            return true;
+        } else if (keyCode >= 37 && keyCode <= 41) {
             return true;
         } else if (keyCode === 65 || keyCode === 68 || keyCode === 87 || keyCode === 83) {
             return true;
@@ -60,6 +64,8 @@ Game.Input = Game.Class({
 
     keyCodeToSymbol: function (keyCode) {
         switch (keyCode) {
+        case 82:
+            return 'space';
         case 37:
         case 65:
             return 'left';
@@ -82,6 +88,7 @@ Game.Input = Game.Class({
             var pairs = input.exclusivePairsOf(event.keyCode);
             var newState = false;
             if (event.action === 'down') {
+                input.everPressed = true;
                 newState = true;
             }
             input.buttonState[symbol] = newState;

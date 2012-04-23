@@ -20,6 +20,8 @@ head.js(
             "javascript/game/resources/spritesheet.js",
             "javascript/game/physics/collection.js",
             "javascript/game/screen/gameplay.js",
+            "javascript/game/screen/info.js",
+            "javascript/game/screen/death.js",
             "javascript/game/display/backbuffer.js",
             "javascript/game/map/generator.js",
             "javascript/game/map/panel.js",

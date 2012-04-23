@@ -13,8 +13,13 @@ var Game = {
         Game.random = new Game.Random();
         Game.instance = new Game.Application({
             $canvas: $canvas,
-            usageUrl: "http://localhost:4567"
+            usageUrl: "http://homnom.com/usageLog/gameEvent"
         });
+    },
+
+    restart: function () {
+        Game.instance.stop();
+        Game.begin();
     },
 
     Class: function (prototype) {

@@ -7,6 +7,9 @@ Game.Screen.Gameplay = Game.Class({
         this.physicsCollection = new Game.Physics.Collection();
         this.map = new Game.Map('bgtiles');
         this.player = new Game.Characters.Player();
+
+        this.infoScreen = new Game.Screen.Info();
+        this.deathScreen = new Game.Screen.Death();
        
         this.physicsCollection.addStatic(this.map);
         this.physicsCollection.addObject(this.player);
@@ -25,6 +28,7 @@ Game.Screen.Gameplay = Game.Class({
     resolveResources: function (resources) {
         this.map.resolveResources(resources);
         this.positionCharacters();
+        this.infoScreen.show();
     },
 
     positionCharacters: function () {
@@ -80,6 +84,14 @@ Game.Screen.Gameplay = Game.Class({
         this.camera.offset.y = this.player.position.y;
 
         this.teleportEnemies(frameNumber);
+
+        if (input.everPressed) {
+            this.infoScreen.hide();
+        }
+        if (this.player.isDead && input.buttonState.space) {
+            this.deathScreen.hide();
+            Game.restart();
+        }
     },
 
     teleportEnemies: function (frameNumber) {
@@ -119,6 +131,7 @@ Game.Screen.Gameplay = Game.Class({
                                  Math.pow(this.player.position.y - enemy.position.y, 2));
             if (distance < enemy.radius + this.player.radius) {
                 this.player.wasKilled();
+                this.deathScreen.show()
                 break;
             }
         }

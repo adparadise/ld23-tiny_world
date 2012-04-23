@@ -28,12 +28,19 @@ Game.Application = Game.Class({
         var application = this;
         var renderCallback = function () {
             application.render();
-            window.requestAnimationFrame(renderCallback);
+            if (!application.shouldStop) {
+                window.requestAnimationFrame(renderCallback);
+            }
         };
 
         this.frameNumber = 0;
         window.requestAnimationFrame(renderCallback);
         this.stepInterval = setInterval(this.eventCallback('step'), 1000 / Game.Constants.worldRate);
+    },
+
+    stop: function () {
+        this.shouldStop = true;
+        clearInterval(this.stepInterval);
     },
 
     step: function () {
