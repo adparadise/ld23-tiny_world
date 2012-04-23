@@ -18,7 +18,7 @@ Game.Map.Generator = Game.Class({
         var poolLimit = 256;
         this.fragmentPool = [];
         for (i = fragmentPoolSize; i--;) {
-            fragments = new Game.Map.Fragments(30, 40, i);
+            fragments = new Game.Map.Fragments(36, 40, i);
             references = fragments.getFragmentReferences();
             for (j = references.length; j--;) {
                 this.fragmentPool.push(references[j]);
@@ -72,7 +72,7 @@ Game.Map.Generator = Game.Class({
 
         for (s = minS; s <= maxS; s++) {
             for (r = minR; r <= maxR; r++) {
-                panelMassList = this.getPanelMasses(r, s);
+                panelMassList = this.getPanelMasses(r, s, true);
                 panelMassList.massInstances.push(massInstance);
             }
         }
@@ -83,9 +83,18 @@ Game.Map.Generator = Game.Class({
         var panelMassList = this.panelMasses[panelMassIndex];
         var massInstance = this.getNewMassInstance();
         this.addMassInstance(massInstance, r * this.panelWidth, s * this.panelHeight);
+        if (Game.random.get(r * 50 + s) > 64) {
+            massInstance = this.getNewMassInstance();
+            this.addMassInstance(massInstance, (r + .5) * this.panelWidth, (s + .5) * this.panelHeight);
+        }
+        if (Game.random.get(r * 50 + s) > 200) {
+            massInstance = this.getNewMassInstance();
+            this.addMassInstance(massInstance, (r + .75) * this.panelWidth, (s + .25) * this.panelHeight);
+        }
+        panelMassList.isComplete = true;
     },
 
-    getPanelMasses: function (r, s) {
+    getPanelMasses: function (r, s, skipPopulate) {
         var panelMassIndex = this.panelMassIndex(r, s);
         var panelMassList;
         if (!this.panelMasses[panelMassIndex]) {
@@ -93,9 +102,11 @@ Game.Map.Generator = Game.Class({
                 isComplete: false,
                 massInstances: []
             };
-            this.populatePanel(r, s);
         }
         panelMassList = this.panelMasses[panelMassIndex];
+        if (!panelMassList.isComplete && !skipPopulate) {
+            this.populatePanel(r, s);
+        }
         return panelMassList;
     },   
 

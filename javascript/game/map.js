@@ -18,10 +18,43 @@ Game.Map = Game.Class({
     findClearingCoords: function (r, s) {
         var panel = this.getPanelForRendering(r, s);
         var coords = panel.findClearingCoords();
-        return {
-            x: (coords.x + .5) * this.tileset.tileWidth,
-            y: (coords.y + .5) * this.tileset.tileHeight,
+        if (coords) {
+            return {
+                x: (coords.x + .5) * this.tileset.tileWidth,
+                y: (coords.y + .5) * this.tileset.tileHeight,
+            }
         }
+    },
+
+    leadPlayerInClearing: function (player) {
+        var i;
+        var x = Math.floor(player.position.x / this.tileset.tileWidth);
+        var y = Math.floor(player.position.y / this.tileset.tileHeight);
+        var r = Math.floor(x / this.panelWidth);
+        var s = Math.floor(y / this.panelHeight);
+        var deltaX, deltaY;
+        var coords;
+
+        deltaX = 0;
+        if (player.velocity.x > 0) {
+            deltaX = 1;
+        } else if (player.velocity.x < 0) {
+            deltaX = -1;
+        }
+        deltaY = 0;
+        if (player.velocity.y > 0) {
+            deltaY = 1;
+        } else if (player.velocity.y < 0) {
+            deltaY = -1;
+        }
+
+        for (i = 2; i < 4; i++) {
+            coords = this.findClearingCoords(r + i * deltaX - deltaY, s + i * deltaY + deltaX);
+            if (coords) {
+                break;
+            }
+        }
+        return coords;
     },
 
     panelIndex: function (r, s) {

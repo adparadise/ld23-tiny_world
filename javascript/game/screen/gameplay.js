@@ -51,8 +51,8 @@ Game.Screen.Gameplay = Game.Class({
             }
         }
 
-        for (r = 1; r < 3; r++) {
-            clearingCoords = this.map.findClearingCoords(clearingR + r, 0);
+        for (r = 0; r < 3; r++) {
+            clearingCoords = this.map.findClearingCoords(clearingR, r);
             if (clearingCoords) {
                 this.enemies[1].position.x = clearingCoords.x;
                 this.enemies[1].position.y = clearingCoords.y;
@@ -78,6 +78,35 @@ Game.Screen.Gameplay = Game.Class({
 
         this.camera.offset.x = this.player.position.x;
         this.camera.offset.y = this.player.position.y;
+
+        this.teleportEnemies(frameNumber);
+    },
+
+    teleportEnemies: function (frameNumber) {
+        var i;
+        var distance;
+        var enemy;
+        var coords;
+        if (!this._lastTeleport) {
+            this._lastTeleport = 1;
+        }
+        for (i = this.enemies.length; i--;) {
+            enemy = this.enemies[i];
+            distance = Math.sqrt(Math.pow(enemy.position.x - this.player.position.x, 2) +
+                                 Math.pow(enemy.position.y - this.player.position.y, 2));
+            if (distance > 700 && 
+                (this.player.velocity.x !== 0 || this.player.velocity.y !== 0) &&
+                this._lastTeleport < frameNumber - 120) {
+
+                coords = this.map.leadPlayerInClearing(this.player);
+                if (coords) {
+                    this._lastTeleport = frameNumber;
+                    enemy.position.x = coords.x;
+                    enemy.position.y = coords.y;
+                    break;
+                }
+            }
+        }
     },
 
     checkForDeath: function () {

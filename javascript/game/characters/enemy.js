@@ -3,9 +3,9 @@
 
 Game.Characters.Enemy = Game.Class({
     initialize: function (position) {
-        this.SPEED_X = 90;
-        this.SPEED_Y = 60;
-        this.SPEED_XY = 70;
+        this.SPEED_X = 140;
+        this.SPEED_Y = 80;
+        this.SPEED_XY = 90;
         this.ACCEL = 2;
         this.position = {
             x: position.x,

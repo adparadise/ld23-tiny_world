@@ -25,8 +25,8 @@ Game.Constants = {
                 bottomCap: [18],
                 leftCap: [27],
                 rightCap: [28],
-                horizontal: [84, 85, 83, 83],
-                vertical:   [67, 77, 87, 97],
+                horizontal: [84, 85, 83],
+                vertical:   [67, 77, 87],
                 _blank: [12]
             },
             rules: {
