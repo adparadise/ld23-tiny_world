@@ -9,6 +9,8 @@ Game.Map = Game.Class({
 
         this.generator = new Game.Map.Generator(this.panelWidth, this.panelHeight);
         this.panels = {};
+        this.totalPanelCount = 0;
+        this.bakedPanelCount = 0;
         this.cameraPanel = {
             r: 0,
             s: 0
@@ -69,6 +71,7 @@ Game.Map = Game.Class({
         };
         var panel = new Game.Map.Panel(this.panelWidth, this.panelHeight, offset, panelIndex, this.tilesetName);
         this.generator.paintToPanel(r, s, panel);
+        this.totalPanelCount += 1;
         
         this.panels[panelIndex] = panel;
     },
@@ -118,6 +121,7 @@ Game.Map = Game.Class({
             }
         }
         panel.isBaked = true;
+        this.bakedPanelCount += 1;
     },
 
     getAt: function (x, y) {

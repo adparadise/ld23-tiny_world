@@ -23,6 +23,7 @@ Game.Screen.Gameplay = Game.Class({
         enemy = new Game.Characters.Enemy({x: 400, y: 200});
         this.enemies.push(enemy);
         this.physicsCollection.addObject(enemy);
+        this.enemyWarpCount = 0;
     },
 
     resolveResources: function (resources) {
@@ -115,10 +116,18 @@ Game.Screen.Gameplay = Game.Class({
                     this._lastTeleport = frameNumber;
                     enemy.position.x = coords.x;
                     enemy.position.y = coords.y;
+                    this.enemyWarpCount += 1;
                     break;
                 }
             }
         }
+    },
+
+    enemyDistance: function (enemyID) {
+        var enemy = this.enemies[enemyID];
+        var distance = Math.sqrt(Math.pow(this.player.position.x - enemy.position.x, 2) +
+                                 Math.pow(this.player.position.y - enemy.position.y, 2));
+        return distance;
     },
 
     checkForDeath: function () {
@@ -127,14 +136,29 @@ Game.Screen.Gameplay = Game.Class({
         var distance;
         for (i = this.enemies.length; i--;) {
             enemy = this.enemies[i];
-            distance = Math.sqrt(Math.pow(this.player.position.x - enemy.position.x, 2) +
-                                 Math.pow(this.player.position.y - enemy.position.y, 2));
-            if (distance < enemy.radius + this.player.radius) {
+            distance = this.enemyDistance(i);
+            if (distance < enemy.radius + this.player.radius && !this.player.isDead) {
                 this.player.wasKilled();
                 this.deathScreen.show();
+                this.sendUsageReport('death');
                 break;
             }
         }
+    },
+
+    sendUsageReport: function (event) {
+        var usageReport = {
+            event: event,
+            frameNumber: Game.instance.frameNumber,
+            enemyWarpCount: this.enemyWarpCount,
+            totalPanelCount: this.map.totalPanelCount,
+            bakedPanelCount: this.map.bakedPanelCount,
+            cameraPanel: this.map.panelIndex(this.map.cameraPanel.r,
+                                             this.map.cameraPanel.s),
+            enemy0Distance: Math.floor(this.enemyDistance(0)),
+            enemy1Distance: Math.floor(this.enemyDistance(1)),
+        };
+        Game.instance.usage.report(usageReport);
     },
 
     render: function (display, resources, frameNumber) {

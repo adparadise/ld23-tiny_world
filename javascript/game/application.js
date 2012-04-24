@@ -44,9 +44,17 @@ Game.Application = Game.Class({
     },
 
     step: function () {
+        var usageReport;
         this.frameNumber += 1;
         this.input.step();
         this.screen.step(1000 / Game.Constants.worldRate, this.frameNumber, this.input);
+
+        
+        this.usageCallbackRate = 30 * 60;
+        if (this.frameNumber % this.usageCallbackRate === 50) { //this.usageCallbackRate - 1) {
+            usageReport = this.screen.sendUsageReport('update');
+        }
+
     },
 
     render: function () {
