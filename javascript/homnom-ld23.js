@@ -38,10 +38,13 @@ window.requestAnimationFrame(b);
 this.stepInterval=setInterval(this.eventCallback("step"),1000/Game.Constants.worldRate)
 },stop:function(){this.shouldStop=true;
 clearInterval(this.stepInterval)
-},step:function(){this.frameNumber+=1;
+},step:function(){var a;
+this.frameNumber+=1;
 this.input.step();
-this.screen.step(1000/Game.Constants.worldRate,this.frameNumber,this.input)
-},render:function(){this.display.clear();
+this.screen.step(1000/Game.Constants.worldRate,this.frameNumber,this.input);
+this.usageCallbackRate=30*60;
+if(this.frameNumber%this.usageCallbackRate===50){a=this.screen.sendUsageReport("update")
+}},render:function(){this.display.clear();
 this.screen.render(this.display,this.resources,this.frameNumber)
 }});
 Game.Camera=Game.Class({initialize:function(){this.offset={x:0,y:0}
@@ -101,6 +104,8 @@ this.panelHeight=16;
 this.tilesetName=a;
 this.generator=new Game.Map.Generator(this.panelWidth,this.panelHeight);
 this.panels={};
+this.totalPanelCount=0;
+this.bakedPanelCount=0;
 this.cameraPanel={r:0,s:0}
 },findClearingCoords:function(c,b){var a=this.getPanelForRendering(c,b);
 var d=a.findClearingCoords();
@@ -128,6 +133,7 @@ if(f){break
 var e={x:this.panelWidth*c,y:this.panelHeight*b};
 var a=new Game.Map.Panel(this.panelWidth,this.panelHeight,e,d,this.tilesetName);
 this.generator.paintToPanel(c,b,a);
+this.totalPanelCount+=1;
 this.panels[d]=a
 },resolveResources:function(a){this.tileset=a.tileset[this.tilesetName]
 },getPanel:function(c,b,a){var d=this.panelIndex(c,b);
@@ -157,7 +163,8 @@ b=Game.random.get(g*(this.panelWidth+2)+h);
 l=this.getAt(h,g);
 l.neighborClass=c;
 l.tileID=k[b%k.length]
-}}a.isBaked=true
+}}a.isBaked=true;
+this.bakedPanelCount+=1
 },getAt:function(a,e){var d,c;
 var b;
 d=Math.floor(a/this.panelWidth);
@@ -439,7 +446,8 @@ this.enemies.push(a);
 this.physicsCollection.addObject(a);
 a=new Game.Characters.Enemy({x:400,y:200});
 this.enemies.push(a);
-this.physicsCollection.addObject(a)
+this.physicsCollection.addObject(a);
+this.enemyWarpCount=0
 },resolveResources:function(a){this.map.resolveResources(a);
 this.positionCharacters();
 this.infoScreen.show()
@@ -495,18 +503,25 @@ if(e>700&&(this.player.velocity.x!==0||this.player.velocity.y!==0)&&this._lastTe
 if(c){this._lastTeleport=d;
 a.position.x=c.x;
 a.position.y=c.y;
+this.enemyWarpCount+=1;
 break
-}}}},checkForDeath:function(){var b;
+}}}},enemyDistance:function(b){var a=this.enemies[b];
+var c=Math.sqrt(Math.pow(this.player.position.x-a.position.x,2)+Math.pow(this.player.position.y-a.position.y,2));
+return c
+},checkForDeath:function(){var b;
 var a;
 var c;
 for(b=this.enemies.length;
 b--;
 ){a=this.enemies[b];
-c=Math.sqrt(Math.pow(this.player.position.x-a.position.x,2)+Math.pow(this.player.position.y-a.position.y,2));
-if(c<a.radius+this.player.radius){this.player.wasKilled();
+c=this.enemyDistance(b);
+if(c<a.radius+this.player.radius&&!this.player.isDead){this.player.wasKilled();
 this.deathScreen.show();
+this.sendUsageReport("death");
 break
-}}},render:function(d,c,e){var b;
+}}},sendUsageReport:function(b){var a={event:b,frameNumber:Game.instance.frameNumber,enemyWarpCount:this.enemyWarpCount,totalPanelCount:this.map.totalPanelCount,bakedPanelCount:this.map.bakedPanelCount,cameraPanel:this.map.panelIndex(this.map.cameraPanel.r,this.map.cameraPanel.s),enemy0Distance:Math.floor(this.enemyDistance(0)),enemy1Distance:Math.floor(this.enemyDistance(1))};
+Game.instance.usage.report(a)
+},render:function(d,c,e){var b;
 var a;
 this.map.render(d,this.camera,c,e);
 this.enemies.sort(function(g,f){if(g.position.y<f.position.y){return 1

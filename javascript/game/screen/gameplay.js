@@ -156,7 +156,7 @@ Game.Screen.Gameplay = Game.Class({
             cameraPanel: this.map.panelIndex(this.map.cameraPanel.r,
                                              this.map.cameraPanel.s),
             enemy0Distance: Math.floor(this.enemyDistance(0)),
-            enemy1Distance: Math.floor(this.enemyDistance(1)),
+            enemy1Distance: Math.floor(this.enemyDistance(1))
         };
         Game.instance.usage.report(usageReport);
     },
